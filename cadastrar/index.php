@@ -1,0 +1,1 @@
+<!DOCTYPE html><html><head>    <meta charset="utf-8"/>    <title>INTELSYSTECH NOVO CLIENTE</title>     <meta http-equiv="refresh" content="0; URL='../index.php/mine/cadastrar'"/></head><body>........</body></html>
