@@ -1,6 +1,6 @@
 <script src="<?php echo base_url() ?>assets/js/jquery.mask.min.js"></script>
 <script src="<?php echo base_url() ?>assets/js/sweetalert2.all.min.js"></script>
-<script src="<?php echo base_url() ?>assets/js/funcoes.js"></script>
+<script src="<?php echo base_url() ?>assets/js/funcoes_admin.js"></script>
 
 <div class="row-fluid" style="margin-top:0">
     <div class="span12">
