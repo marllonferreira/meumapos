@@ -1,10 +1,11 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
 
 
+
 /**
  * App current version
  */
-$config['app_version'] = '4.24.0_edit_1.0.0';
+$config['app_version'] = '4.24.0_edit_1.0.1';
 
 /**
  * Nome do sistema
