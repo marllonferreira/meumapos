@@ -1,6 +1,4 @@
 <link href="<?= base_url('assets/css/custom.css'); ?>" rel="stylesheet">
-<?php $totalServico = 0;
-$totalProdutos = 0; ?>
 <div class="row-fluid" style="margin-top: 0">
     <div class="span12">
         <div class="widget-box">
@@ -10,16 +8,19 @@ $totalProdutos = 0; ?>
                 </span>
                 <h5>Ordem de Serviço</h5>
                 <div class="buttons">
-                    <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')) {
-                        echo '<a title="Editar OS" class="btn btn-mini btn-info" href="' . base_url() . 'index.php/os/editar/' . $result->idOs . '"><i class="fas fa-edit"></i> Editar</a>';
-                    } ?>
+                    <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'eOs') && ($result->status != "Cancelado" && $result->status != "Faturado" && $result->faturado != 1)) {
+    echo '<a title="Editar OS" class="btn btn-mini btn-info" href="' . base_url() . 'index.php/os/editar/' . $result->idOs . '"><i class="fas fa-edit"></i> Editar</a>';
+} ?>
 
                     <a target="_blank" title="Imprimir OS" class="btn btn-mini btn-inverse" href="<?php echo site_url() ?>/os/imprimir/<?php echo $result->idOs; ?>"><i class="fas fa-print"></i> Imprimir A4</a>
                     <a target="_blank" title="Imprimir OS" class="btn btn-mini btn-inverse" href="<?php echo site_url() ?>/os/imprimirTermica/<?php echo $result->idOs; ?>"><i class="fas fa-print"></i> Imprimir Não Fiscal</a>
                     <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')) {
-                        $zapnumber = preg_replace("/[^0-9]/", "", $result->celular_cliente);
-                        echo '<a title="Enviar Por WhatsApp" class="btn btn-mini btn-success" id="enviarWhatsApp" target="_blank" href="https://web.whatsapp.com/send?phone=55' . $zapnumber . '&text=Prezado(a)%20*' . $result->nomeCliente . '*.%0d%0a%0d%0aSua%20*O.S%20' . $result->idOs . '*%20referente%20ao%20equipamento%20*' . strip_tags($result->descricaoProduto) . '*%20foi%20atualizada%20para%20*' . $result->status . '.*%0d%0a%0d%0aAcesse%20' . base_url() . 'cadastrar/' . '%20%20para%20saber%20mais%20detalhes%20ou%20entre%20em%20contato.%0d%0a%0d%0aAtenciosamente,%20*' . ($emitente ? $emitente[0]->nome : '') . '%20' . ($emitente ? $emitente[0]->telefone : '') . '*%0d%0a*essa%20e%20uma%20mensagem%20automatica.*"><i class="fab fa-whatsapp"></i> WhatsApp</a>';
-                    } ?>
+    $this->load->model('os_model');
+    $zapnumber = preg_replace("/[^0-9]/", "", $result->celular_cliente);
+    $troca = [$result->nomeCliente, $result->idOs, $result->status, 'R$ ' . number_format($totalProdutos + $totalServico, 2, ',', '.'), strip_tags($result->descricaoProduto), ($emitente ? $emitente[0]->nome : ''), ($emitente ? $emitente[0]->telefone : ''), strip_tags($result->observacoes), strip_tags($result->defeito), strip_tags($result->laudoTecnico), date('d/m/Y', strtotime($result->dataFinal)), date('d/m/Y', strtotime($result->dataInicial)), $result->garantia . ' dias'];
+    $texto_de_notificacao = $this->os_model->criarTextoWhats($texto_de_notificacao, $troca);
+    echo '<a title="Enviar Por WhatsApp" class="btn btn-mini btn-success" id="enviarWhatsApp" target="_blank" href="https://web.whatsapp.com/send?phone=55' . $zapnumber . '&text=' . $texto_de_notificacao . '"><i class="fab fa-whatsapp"></i> WhatsApp</a>';
+} ?>
 
                     <a title="Enviar por E-mail" class="btn btn-mini btn-warning" href="<?php echo site_url() ?>/os/enviar_email/<?php echo $result->idOs; ?>"><i class="fas fa-envelope"></i> Enviar por E-mail</a>
                     <?php if ($result->garantias_id) { ?> <a target="_blank" title="Imprimir Termo de Garantia" class="btn btn-mini btn-inverse" href="<?php echo site_url() ?>/garantias/imprimir/<?php echo $result->garantias_id; ?>"><i class="fas fa-text-width"></i> Imprimir Termo de Garantia</a> <?php  } ?>
@@ -158,7 +159,27 @@ $totalProdutos = 0; ?>
                                 <?php } ?>
                             </tbody>
                         </table>
-
+                        <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Anotação</th>
+                                                <th>Data/Hora</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            foreach ($anotacoes as $a) {
+                                                echo '<tr>';
+                                                echo '<td>' . $a->anotacao . '</td>';
+                                                echo '<td>' . date('d/m/Y H:i:s', strtotime($a->data_hora))  . '</td>';
+                                                echo '</tr>';
+                                            }
+                                            if (!$anotacoes) {
+                                                echo '<tr><td colspan="2">Nenhuma anotação cadastrada</td></tr>';
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
                         <?php if ($produtos != null) { ?>
                             <br />
                             <table class="table table-bordered table-condensed" id="tblProdutos">
@@ -174,7 +195,6 @@ $totalProdutos = 0; ?>
                                     <?php
 
                                     foreach ($produtos as $p) {
-                                        $totalProdutos = $totalProdutos + $p->subTotal;
                                         echo '<tr>';
                                         echo '<td>' . $p->descricao . '</td>';
                                         echo '<td>' . $p->quantidade . '</td>';
@@ -208,7 +228,6 @@ $totalProdutos = 0; ?>
                                     foreach ($servicos as $s) {
                                         $preco = $s->preco ?: $s->precoVenda;
                                         $subtotal = $preco * ($s->quantidade ?: 1);
-                                        $totalServico = $totalServico + $subtotal;
                                         echo '<tr>';
                                         echo '<td>' . $s->nome . '</td>';
                                         echo '<td>' . ($s->quantidade ?: 1) . '</td>';
@@ -224,6 +243,32 @@ $totalProdutos = 0; ?>
                                 </tbody>
                             </table>
                         <?php } ?>
+
+                        <?php if ($anexos != null) { ?>
+                            <table class="table table-bordered table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th>Anexo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                     foreach ($anexos as $a) {
+                                         if ($a->thumb == null) {
+                                             $thumb = base_url() . 'assets/img/icon-file.png';
+                                             $link = base_url() . 'assets/img/icon-file.png';
+                                         } else {
+                                             $thumb = $a->url . '/thumbs/' . $a->thumb;
+                                             $link = $a->url .'/'. $a->anexo;
+                                         }
+                                         echo '<tr>';
+                                         echo '<td><a style="min-height: 150px;" href="#modal-anexo" imagem="' . $a->idAnexos . '" link="' . $link . '" role="button" class="btn anexo span12" data-toggle="modal"><img src="' . $thumb . '" alt=""></a></td>';
+                                         echo '</tr>';
+                                     } ?>
+                                </tbody>
+                            </table>
+                        <?php } ?>
+
                         <?php
                         if ($totalProdutos != 0 || $totalServico != 0) {
                             echo "<h4 style='text-align: right'>Valor Total: R$" . number_format($totalProdutos + $totalServico, 2, ',', '.') . "</h4>";
@@ -233,163 +278,72 @@ $totalProdutos = 0; ?>
                 </div>
             </div>
         </div>
-        <div id="msgError" class=" alert alert-danger" hidden> </div>
-        <?php
+    </div>
+</div>
 
-        if ($pagamento) {
-            if ($totalProdutos || $totalServico) {
+<a href="#modal-gerar-pagamento" id="btn-forma-pagamento" role="button" data-toggle="modal" class="btn btn-success"><i class="fas fa-cash-register"></i> Gerar Pagamento</a>
 
-                $preference = @$this->MercadoPago->getPreference($pagamento->access_token, $result->idOs, 'Pagamento da OS', ($totalProdutos + $totalServico), $quantidade = 1);
-                if ($pagamento->nome == 'MercadoPago' && isset($preference->id)) {
-                    echo '<form action="' . site_url() . '" method="POST">
-                            <script src="https://www.mercadopago.com.br/integrations/v1/web-payment-checkout.js" data-preference-id="' . $preference->id . '" data-button-label="Gerar Pagamento">
-                            </script>
-                        </form>';
+<?= $modalGerarPagamento ?>
+
+<!-- Modal visualizar anexo -->
+<div id="modal-anexo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">Visualizar Anexo</h3>
+    </div>
+    <div class="modal-body">
+        <div class="span12" id="div-visualizar-anexo" style="text-align: center">
+            <div class='progress progress-info progress-striped active'>
+                <div class='bar' style='width: 100%'></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Fechar</button>
+        <a href="" id-imagem="" class="btn btn-inverse" id="download">Download</a>
+        <a href="" link="" class="btn btn-danger" id="excluir-anexo">Excluir Anexo</a>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $(document).on('click', '.anexo', function(event) {
+            event.preventDefault();
+            var link = $(this).attr('link');
+            var id = $(this).attr('imagem');
+            var url = '<?php echo base_url(); ?>index.php/os/excluirAnexo/';
+            $("#div-visualizar-anexo").html('<img src="' + link + '" alt="">');
+            $("#excluir-anexo").attr('link', url + id);
+
+            $("#download").attr('href', "<?php echo base_url(); ?>index.php/os/downloadanexo/" + id);
+
+        });
+
+        $(document).on('click', '#excluir-anexo', function(event) {
+            event.preventDefault();
+
+            var link = $(this).attr('link');
+            var idOS = "<?php echo $result->idOs; ?>"
+
+            $('#modal-anexo').modal('hide');
+            $("#divAnexos").html("<div class='progress progress-info progress-striped active'><div class='bar' style='width: 100%'></div></div>");
+
+            $.ajax({
+                type: "POST",
+                url: link,
+                dataType: 'json',
+                data: "idOs=" + idOS,
+                success: function(data) {
+                    if (data.result == true) {
+                        $("#divAnexos").load("<?php echo current_url(); ?> #divAnexos");
+                    } else {
+                        Swal.fire({
+                            type: "error",
+                            title: "Atenção",
+                            text: data.mensagem
+                        });
+                    }
                 }
-            }
-        }
-        ?>
-
-    </div>
-</div>
-<?php if ($pagamento->nome != "MercadoPago") { ?>
-    <a href="#myModalFormaPagamento" id="btn-forma-pagamento" role="button" data-toggle="modal" class="btn btn-success"><i class="fas fa-cash-register"></i> Gerar Pagamento</a>
-<?php } ?>
-<div class="modal fade" id="myModalFormaPagamento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Escolher Forma de Pagamento</h4>
-            </div>
-            <div class="modal-body">
-                <div id="forma-pag" class="">
-                    <div class="form-group">
-                        <label for="exampleInputPassword1">Forma de Pagamento: </label>
-                        <select id="escolha-pagamento" class="form-control" required>
-                            <option value="" selected>Forma de Pagamento</option>
-                            <option value="boleto">Boleto</option>
-                            <option value="link-pagamento">Link de Pagamento</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <div id="mostra-butao-pagamento-boleto" hidden>
-                    <?php
-                    if ($pagamento) {
-                        if ($totalProdutos || $totalServico) {
-
-                            if ($pagamento->nome == 'GerenciaNet') {
-                                echo '<form id="form-gerar-pagamento-gerencianet-boleto" action="' . base_url() . 'index.php/os/gerarpagamentogerencianetboleto" method="POST">
-                                <input type="hidden" id="nomeCliente" name="nomeCliente" value="' . $result->nomeCliente . '">
-                                <input type="hidden" id="emailCliente" name="emailCliente" value="' . $result->email . '">
-                                <input type="hidden" id="documentoCliente" name="documentoCliente" value="' . $result->documento . '">
-                                <input type="hidden" id="celular_cliente" name="celular_cliente" value="' . $result->celular_cliente . '">
-                                <input type="hidden" id="ruaCliente" name="ruaCliente" value="' . $result->rua . '">
-                                <input type="hidden" id="numeroCliente" name="numeroCliente" value="' . $result->numero . '">
-                                <input type="hidden" id="bairroCliente" name="bairroCliente" value="' . $result->bairro . '">
-                                <input type="hidden" id="cidadeCliente" name="cidadeCliente" value="' . $result->cidade . '">
-                                <input type="hidden" id="estadoCliente" name="estadoCliente" value="' . $result->estado . '">
-                                <input type="hidden" id="cepCliente" name="cepCliente" value="' . $result->cep . '">
-                                <input type="hidden" id="idOs" name="idOs" value="' . $result->idOs . '">
-                                <input type="hidden" id="titleBoleto" name="titleBoleto" value="OS:">
-                                <input type="hidden" id="totalValor" name="totalValor" value="' . ($totalProdutos + $totalServico) . '">
-                                <input type="hidden" id="quantidade" name="quantidade" value="1">
-                    <button id="submitPayment" type="submit" class="btn btn-success">Gerar Boleto de Pagamento</button>
-                    </form>';
-                            }
-                        }
-                    } ?>
-                </div>
-
-                <div id="mostra-butao-pagamento-link" hidden>
-                    <?php
-                    if ($pagamento) {
-                        if ($totalProdutos || $totalServico) {
-
-                            if ($pagamento->nome == 'GerenciaNet') {
-
-                                echo '<form id="form-gerar-pagamento-gerencianet-link" action="' . base_url() . 'index.php/os/gerarpagamentogerencianetlink" method="POST">
-                    <input type="hidden" id="idOs" name="idOs" value="' . $result->idOs . '">
-                    <input type="hidden" id="titleLink" name="titleLink" value="OS:">
-                    <input type="hidden" id="totalValor" name="totalValor" value="' . ($totalProdutos + $totalServico) . '">
-                    <input type="hidden" id="quantidade" name="quantidade" value="1">
-                    <button id="submitPayment" type="submit" class="btn btn-success">Gerar Link de Pagamento</button>
-                    </form>';
-                            }
-                        }
-                    } ?>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-<!--div responsável por exibir o resultado da emissão do boleto-->
-<div class="modal fade" id="myModalBoleto" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabelMsg">Boleto Emitido</h4>
-            </div>
-            <div class="modal-body">
-                <div id="boleto" class="">
-                    <table class="table" id="result_table">
-                        <!--"code":200,"data":{"barcode":"03399.32766 55400.000000 60348.101027 6 69020000009000","link":"https:\/\/visualizacaosandbox.gerencianet.com.br\/emissao\/59808_79_FORAA2\/A4XB-59808-60348-HIMA4","expire_at":"2016-08-30","charge_id":76777,"status":"waiting","total":9000,"payment":"banking_billet"-->
-
-                    </table>
-                </div>
-            </div>
-            <div class="modal-footer">
-
-            </div>
-        </div>
-    </div>
-
-</div>
-
-<div class="modal fade" id="myModalLink" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title-msg" id="myModalLabelMsg">Link Emitido</h4>
-            </div>
-            <div class="modal-body">
-                <div id="boleto" class="">
-                    <table class="table" id="result_table_link">
-                        <!--"code":200,"data":{"barcode":"03399.32766 55400.000000 60348.101027 6 69020000009000","link":"https:\/\/visualizacaosandbox.gerencianet.com.br\/emissao\/59808_79_FORAA2\/A4XB-59808-60348-HIMA4","expire_at":"2016-08-30","charge_id":76777,"status":"waiting","total":9000,"payment":"banking_billet"-->
-
-                    </table>
-                </div>
-            </div>
-            <div class="modal-footer">
-
-            </div>
-        </div>
-    </div>
-
-</div>
-
-
-<!-- Este componente é utilizando para exibir um alerta(modal) para o usuário aguardar as consultas via API.  -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Um momento.</h4>
-            </div>
-            <div class="modal-body">
-                Estamos processando a requisição <img src="<?= base_url('assets/img/ajax-loader.gif'); ?>">.
-            </div>
-            <div class="modal-footer">
-
-            </div>
-        </div>
-    </div>
-</div>
-<script src="<?= base_url('assets/js/script-payments.js'); ?>"></script>
+            });
+        });
+    });
+</script>

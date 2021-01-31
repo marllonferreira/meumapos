@@ -153,68 +153,21 @@ class Vendas extends MY_Controller
 
         $this->data['custom_error'] = '';
         $this->load->model('mapos_model');
-        $this->load->model('pagamentos_model');
         $this->data['result'] = $this->vendas_model->getById($this->uri->segment(3));
         $this->data['produtos'] = $this->vendas_model->getProdutos($this->uri->segment(3));
-        $this->data['pagamento'] = $this->pagamentos_model->getPagamentos($this->uri->segment(3));
         $this->data['emitente'] = $this->mapos_model->getEmitente();
-
-        if ($this->data['pagamento']) {
-            $this->load->library('Gateways/MercadoPago', null, 'MercadoPago');
-        }
+        $this->data['modalGerarPagamento'] = $this->load->view(
+            'cobrancas/modalGerarPagamento',
+            [
+                'id' => $this->uri->segment(3),
+                'tipo' => 'venda',
+            ],
+            true
+        );
 
         $this->data['view'] = 'vendas/visualizarVenda';
+
         return $this->layout();
-    }
-
-    public function gerarPagamentoGerencianetBoleto()
-    {
-        
-        $this->load->library('Gateways/GerencianetSdk', null, 'GerencianetSdk');
-
-        $this->load->model('pagamentos_model');
-        $pagamentoM = $this->pagamentos_model->getPagamentos($this->uri->segment(3));
-
-        $pagamento = $this->GerencianetSdk->gerarBoleto(
-            $pagamentoM->client_id,
-            $pagamentoM->client_secret,
-            $this->input->post('nomeCliente'),
-            $this->input->post('emailCliente'),
-            $this->input->post('documentoCliente'),
-            $this->input->post('celular_cliente'),
-            $this->input->post('ruaCliente'),
-            $this->input->post('numeroCliente'),
-            $this->input->post('bairroCliente'),
-            $this->input->post('cidadeCliente'),
-            $this->input->post('estadoCliente'),
-            $this->input->post('cepCliente'),
-            $this->input->post('idVenda'),
-            $this->input->post('titleVenda'),
-            $this->input->post('totalValor'),
-            intval($this->input->post('quantidade'))
-        );
-        
-        print_r($pagamento);
-    }
-
-    public function gerarPagamentoGerencianetLink()
-    {
-
-        $this->load->library('Gateways/GerencianetSdk', null, 'GerencianetSdk');
-
-        $this->load->model('pagamentos_model');
-        $pagamentoM = $this->pagamentos_model->getPagamentos($this->uri->segment(3));
-
-        $pagamento = $this->GerencianetSdk->gerarLink(
-            $pagamentoM->client_id,
-            $pagamentoM->client_secret,
-            $this->input->post('idVenda'),
-            $this->input->post('titleLink'),
-            $this->input->post('totalValor'),
-            intval($this->input->post('quantidade'))
-        );
-
-        print_r($pagamento);
     }
 
 
@@ -270,10 +223,23 @@ class Vendas extends MY_Controller
         $this->load->model('vendas_model');
 
         $id = $this->input->post('id');
-        $venda = $this->vendas_model->getById($id);
+        $venda = $this->vendas_model->getByIdCobrancas($id);
         if ($venda == null) {
-            $this->session->set_flashdata('error', 'Erro ao tentar excluir venda.');
-            redirect(site_url('vendas/gerenciar/'));
+            $venda = $this->vendas_model->getById($id);
+            if ($venda == null) {
+                $this->session->set_flashdata('error', 'Erro ao tentar excluir venda.');
+                redirect(site_url('vendas/gerenciar/'));
+            }
+        }
+
+
+        if ($venda->idCobranca != null) {
+            if ($venda->status == "canceled") {
+                $this->vendas_model->delete('cobrancas', 'vendas_id', $id);
+            } else {
+                $this->session->set_flashdata('error', 'Existe uma cobrança associada a esta venda, deve cancelar e/ou excluir a cobrança primeiro!');
+                redirect(site_url('vendas/gerenciar/'));
+            }
         }
 
         $this->vendas_model->delete('itens_de_vendas', 'vendas_id', $id);
@@ -416,10 +382,11 @@ class Vendas extends MY_Controller
                 'clientes_id' => $this->input->post('clientes_id'),
                 'data_vencimento' => $vencimento,
                 'data_pagamento' => $recebimento,
-                'baixado' => $this->input->post('recebido'),
+                'baixado' => $this->input->post('recebido') == 1 ? true : false,
                 'cliente_fornecedor' => set_value('cliente'),
                 'forma_pgto' => $this->input->post('formaPgto'),
                 'tipo' => $this->input->post('tipo'),
+                'usuarios_id' => $this->session->userdata('id'),
             ];
 
             if ($this->vendas_model->add('lancamentos', $data) == true) {

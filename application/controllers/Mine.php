@@ -45,7 +45,7 @@ class Mine extends CI_Controller
             $cliente = $this->db->get('clientes');
             if ($cliente->num_rows() > 0) {
                 $cliente = $cliente->row();
-                $dados = ['nome' => $cliente->nomeCliente, 'cliente_id' => $cliente->idClientes, 'conectado' => true];
+                $dados = ['nome' => $cliente->nomeCliente, 'cliente_id' => $cliente->idClientes, 'email' => $cliente->email, 'conectado' => true, 'isCliente' => true];
                 $this->session->set_userdata($dados);
 
                 if ($ajax == true) {
@@ -172,6 +172,92 @@ class Mine extends CI_Controller
         $this->load->view('conecte/template', $data);
     }
 
+    public function cobrancas()
+    {
+        if (!session_id() || !$this->session->userdata('conectado')) {
+            redirect('mine');
+        }
+
+        $this->load->library('pagination');
+        $this->load->config('payment_gateways');
+
+        $data['menuCobrancas'] = 'cobrancas';
+
+        $config['base_url'] = base_url() . 'index.php/mine/cobrancas/';
+        $config['total_rows'] = $this->Conecte_model->count('cobrancas', $this->session->userdata('cliente_id'));
+        $config['per_page'] = 10;
+        $config['next_link'] = 'Próxima';
+        $config['prev_link'] = 'Anterior';
+        $config['full_tag_open'] = '<div class="pagination alternate"><ul>';
+        $config['full_tag_close'] = '</ul></div>';
+        $config['num_tag_open'] = '<li>';
+        $config['num_tag_close'] = '</li>';
+        $config['cur_tag_open'] = '<li><a style="color: #2D335B"><b>';
+        $config['cur_tag_close'] = '</b></a></li>';
+        $config['prev_tag_open'] = '<li>';
+        $config['prev_tag_close'] = '</li>';
+        $config['next_tag_open'] = '<li>';
+        $config['next_tag_close'] = '</li>';
+        $config['first_link'] = 'Primeira';
+        $config['last_link'] = 'Última';
+        $config['first_tag_open'] = '<li>';
+        $config['first_tag_close'] = '</li>';
+        $config['last_tag_open'] = '<li>';
+        $config['last_tag_close'] = '</li>';
+
+        $this->pagination->initialize($config);
+
+        $data['results'] = $this->Conecte_model->getCobrancas('cobrancas', '*', '', $config['per_page'], $this->uri->segment(3), '', '', $this->session->userdata('cliente_id'));
+        $data['output'] = 'conecte/cobrancas';
+
+        $this->load->view('conecte/template', $data);
+    }
+
+    public function atualizarcobranca($id = null)
+    {
+        if (!session_id() || !$this->session->userdata('conectado')) {
+            redirect('mine');
+        }
+
+        if (!$this->uri->segment(3) || !is_numeric($this->uri->segment(3))) {
+            $this->session->set_flashdata('error', 'Item não pode ser encontrado, parâmetro não foi passado corretamente.');
+            redirect('mapos');
+        }
+
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'eCobranca')) {
+            $this->session->set_flashdata('error', 'Você não tem permissão para atualizar cobrança.');
+            redirect(base_url());
+        }
+
+        $this->load->model('cobrancas_model');
+        $this->cobrancas_model->atualizarStatus($this->uri->segment(3));
+
+        redirect(site_url('mine/cobrancas/'));
+    }
+
+    public function enviarcobranca()
+    {
+        if (!session_id() || !$this->session->userdata('conectado')) {
+            redirect('mine');
+        }
+
+        if (!$this->uri->segment(3) || !is_numeric($this->uri->segment(3))) {
+            $this->session->set_flashdata('error', 'Item não pode ser encontrado, parâmetro não foi passado corretamente.');
+            redirect('mapos');
+        }
+
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'eCobranca')) {
+            $this->session->set_flashdata('error', 'Você não tem permissão para atualizar cobrança.');
+            redirect(base_url());
+        }
+
+        $this->load->model('cobrancas_model');
+        $this->cobrancas_model->enviarEmail($this->uri->segment(3));
+        $this->session->set_flashdata('success', 'Email adicionado na fila.');
+
+        redirect(site_url('mine/cobrancas/'));
+    }
+
     public function os()
     {
         if (!session_id() || !$this->session->userdata('conectado')) {
@@ -221,12 +307,10 @@ class Mine extends CI_Controller
         $this->data['custom_error'] = '';
         $this->load->model('mapos_model');
         $this->load->model('os_model');
-        $this->load->model('pagamentos_model');
 
         $data['result'] = $this->os_model->getById($this->uri->segment(3));
         $data['produtos'] = $this->os_model->getProdutos($this->uri->segment(3));
         $data['servicos'] = $this->os_model->getServicos($this->uri->segment(3));
-        $data['pagamento'] = $this->pagamentos_model->getPagamentos($this->uri->segment(3));
         $data['emitente'] = $this->mapos_model->getEmitente();
 
         if ($data['result']->idClientes != $this->session->userdata('cliente_id')) {
@@ -234,62 +318,24 @@ class Mine extends CI_Controller
             redirect('mine/painel');
         }
 
-        if ($data['pagamento']) {
-            $this->load->library('Gateways/MercadoPago', null, 'MercadoPago');
-        }
-        
         $data['output'] = 'conecte/visualizar_os';
         $this->load->view('conecte/template', $data);
     }
 
     public function gerarPagamentoGerencianetBoleto()
     {
+        $json = ['code' => 4001, 'error' => 'Erro interno' , 'errorDescription' => 'Cobrança não pode ser gerada pelo lado do cliente'];
+        print_r(json_encode($json));
 
-        $this->load->library('Gateways/GerencianetSdk', null, 'GerencianetSdk');
-
-        $this->load->model('pagamentos_model');
-        $pagamentoM = $this->pagamentos_model->getPagamentos($this->uri->segment(3));
-
-        $pagamento = $this->GerencianetSdk->gerarBoleto(
-            $pagamentoM->client_id,
-            $pagamentoM->client_secret,
-            $this->input->post('nomeCliente'),
-            $this->input->post('emailCliente'),
-            $this->input->post('documentoCliente'),
-            $this->input->post('celular_cliente'),
-            $this->input->post('ruaCliente'),
-            $this->input->post('numeroCliente'),
-            $this->input->post('bairroCliente'),
-            $this->input->post('cidadeCliente'),
-            $this->input->post('estadoCliente'),
-            $this->input->post('cepCliente'),
-            $this->input->post('idOs'),
-            $this->input->post('titleBoleto'),
-            $this->input->post('totalValor'),
-            intval($this->input->post('quantidade'))
-        );
-
-        print_r($pagamento);
+        return;
     }
 
     public function gerarPagamentoGerencianetLink()
     {
+        $json = ['code' => 4001, 'error' => 'Erro interno' , 'errorDescription' => 'Cobrança não pode ser gerada pelo lado do cliente'];
+        print_r(json_encode($json));
 
-        $this->load->library('Gateways/GerencianetSdk', null, 'GerencianetSdk');
-
-        $this->load->model('pagamentos_model');
-        $pagamentoM = $this->pagamentos_model->getPagamentos($this->uri->segment(3));
-
-        $pagamento = $this->GerencianetSdk->gerarLink(
-            $pagamentoM->client_id,
-            $pagamentoM->client_secret,
-            $this->input->post('idOs'),
-            $this->input->post('titleLink'),
-            $this->input->post('totalValor'),
-            intval($this->input->post('quantidade'))
-        );
-
-        print_r($pagamento);
+        return;
     }
 
     public function imprimirOs($id = null)
@@ -325,22 +371,18 @@ class Mine extends CI_Controller
         $data['custom_error'] = '';
         $this->load->model('mapos_model');
         $this->load->model('vendas_model');
-        $this->load->model('pagamentos_model');
 
         $data['result'] = $this->vendas_model->getById($this->uri->segment(3));
         $data['produtos'] = $this->vendas_model->getProdutos($this->uri->segment(3));
-        $data['pagamento'] = $this->pagamentos_model->getPagamentos($this->uri->segment(3));
         $data['emitente'] = $this->mapos_model->getEmitente();
 
         if ($data['result']->clientes_id != $this->session->userdata('cliente_id')) {
             $this->session->set_flashdata('error', 'Esta OS não pertence ao cliente logado.');
             redirect('mine/painel');
         }
-        if ($data['pagamento']) {
-            $this->load->library('Gateways/MercadoPago', null, 'MercadoPago');
-        }
-        
+
         $data['output'] = 'conecte/visualizar_compra';
+
         $this->load->view('conecte/template', $data);
     }
 

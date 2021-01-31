@@ -1,6 +1,6 @@
 <!--sidebar-menu-->
 <div id="sidebar"> <a href="#" class="visible-phone"><i class="fas fa-list"></i> Menu</a>
-  <ul>
+  <ul style="position: relative;">
     <li class="<?php if (isset($menuPainel)) {
     echo 'active';
 }; ?>"><a href="<?= base_url() ?>"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
@@ -52,7 +52,12 @@
     }; ?>">
         <a href="#"><i class="fas fa-hand-holding-usd"></i> <span>Financeiro</span> <span class="label"><i class="fas fa-chevron-down"></i></span></a>
         <ul>
-          <li><a href="<?= site_url('financeiro/lancamentos') ?>">Lançamentos</a></li>
+        <li class="<?php if (isset($menuFinanceiro) && $menuFinanceiro == 'financeiro') {
+        echo 'active';
+    }; ?>"><a href="<?= site_url('financeiro/lancamentos') ?>">Lançamentos</a></li>
+        <li class="<?php if (isset($menuFinanceiro) && $menuFinanceiro == 'cobrancas') {
+        echo 'active';
+    }; ?>"><a href="<?= site_url('cobrancas/cobrancas') ?>">Cobranças</a></li>
         </ul>
       </li>
     <?php
@@ -91,8 +96,12 @@
             <li><a href="<?= site_url('relatorios/financeiro') ?>">Financeiro</a></li>
           <?php
           } ?>
-          <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'rVenda') && $this->permission->checkPermission($this->session->userdata('permissao'), 'rOs')) { ?>
+          <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'rFinanceiro') && $this->permission->checkPermission($this->session->userdata('permissao'), 'rOs')) { ?>
             <li><a href="<?= site_url('relatorios/sku') ?>">SKU</a></li>
+          <?php
+          } ?>
+          <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'rFinanceiro') && $this->permission->checkPermission($this->session->userdata('permissao'), 'rOs')) { ?>
+            <li><a href="<?= site_url('relatorios/receitasBrutasMei') ?>">Receitas Brutas - MEI</a></li>
           <?php
           } ?>
         </ul>
@@ -126,11 +135,6 @@
           <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'cBackup')) { ?>
             <li><a href="<?= site_url('mapos/backup') ?>">Backup</a></li>
           <?php } ?>
-          <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vPagamento')) { ?>
-            <li><a href="<?= site_url('pagamentos') ?>"><span>Pagamentos</span></a></li>
-          <?php
-          } ?>
-
         </ul>
       </li>
     <?php

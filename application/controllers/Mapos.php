@@ -21,10 +21,12 @@ class Mapos extends MY_Controller
     {
         $this->data['ordens'] = $this->mapos_model->getOsAbertas();
         $this->data['ordens1'] = $this->mapos_model->getOsAguardandoPecas();
+        $this->data['ordens_andamento'] = $this->mapos_model->getOsAndamento();
         $this->data['produtos'] = $this->mapos_model->getProdutosMinimo();
         $this->data['os'] = $this->mapos_model->getOsEstatisticas();
         $this->data['estatisticas_financeiro'] = $this->mapos_model->getEstatisticasFinanceiro();
         $this->data['vendas_mes'] = $this->mapos_model->getEstatisticasVendasMes($this->input->get('year'));
+        $this->data['vendas_mesinadipl'] = $this->mapos_model->getEstatisticasVendasMesInadimplencia($this->input->get('year'));
         $this->data['menuPainel'] = 'Painel';
         $this->data['view'] = 'mapos/painel';
         return $this->layout();
@@ -339,7 +341,9 @@ class Mapos extends MY_Controller
         $this->form_validation->set_rules('app_theme', 'Tema do Sistema', 'required|trim');
         $this->form_validation->set_rules('os_notification', 'Notificação de OS', 'required|trim');
         $this->form_validation->set_rules('control_estoque', 'Controle de Estoque', 'required|trim');
-
+        $this->form_validation->set_rules('notifica_whats', 'Notificação Whatsapp', 'required|trim');
+        $this->form_validation->set_rules('control_baixa', 'Controle de Baixa', 'required|trim');
+        
         if ($this->form_validation->run() == false) {
             $this->data['custom_error'] = (validation_errors() ? '<div class="alert">' . validation_errors() . '</div>' : false);
         } else {
@@ -349,8 +353,9 @@ class Mapos extends MY_Controller
                 'app_theme' => $this->input->post('app_theme'),
                 'os_notification' => $this->input->post('os_notification'),
                 'control_estoque' => $this->input->post('control_estoque'),
+                'notifica_whats' => $this->input->post('notifica_whats'),
+                'control_baixa' => $this->input->post('control_baixa'),
             ];
-
             if ($this->mapos_model->saveConfiguracao($data) == true) {
                 $this->session->set_flashdata('success', 'Configurações do sistema atualizadas com sucesso!');
                 redirect(site_url('mapos/configurar'));
@@ -430,6 +435,7 @@ class Mapos extends MY_Controller
                 case 'Aberto':
                     $cor = '#00cd00';
                     break;
+                case 'Negociação':
                 case 'Em Andamento':
                     $cor = '#436eee';
                     break;
@@ -469,6 +475,7 @@ class Mapos extends MY_Controller
                     'observacoes' => '<b>Observações:</b> ' . $os->observacoes,
                     'total' => '<b>Valor Total:</b> R$ ' . number_format($os->totalProdutos + $os->totalServicos, 2, ',', '.'),
                     'valorFaturado' => '<b>Valor Faturado:</b> R$ ' . number_format($os->valorTotal, 2, ',', '.'),
+                    'editar' => !($os->status == "Faturado" || $os->status == "Cancelado" || $os->faturado == 1),
                 ]
             ];
         }, $allOs);

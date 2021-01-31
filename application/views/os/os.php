@@ -16,10 +16,11 @@
             <input type="text" name="pesquisa" id="pesquisa" placeholder="Nome do cliente a pesquisar" class="span12" value="">
         </div>
         <div class="span2">
-            <select name="status[]" id="status" class="span12">
+            <select name="status[]" id="status" class="span12" multiple>
                 <option value="">Selecione status</option>
                 <option value="Aberto">Aberto</option>
                 <option value="Faturado">Faturado</option>
+                <option value="Negociação">Negociação</option>
                 <option value="Em Andamento">Em Andamento</option>
                 <option value="Orçamento">Orçamento</option>
                 <option value="Finalizado">Finalizado</option>
@@ -34,7 +35,7 @@
             <input type="text" name="data2" autocomplete="off" id="data2" placeholder="Data Final" class="span6 datepicker" value="">
         </div>
         <div class="span1">
-            <button class="btn btn-info span12 btn"> <i class="fas fa-search"></i> </button>
+            <button class="span12 btn"> <i class="fas fa-search"></i> </button>
         </div>
     </form>
 </div>
@@ -53,14 +54,14 @@
                     <tr style="background-color: #2D335B">
                         <th>N° OS</th>
                         <th>Cliente</th>
-                        <!-- <th>Responsável</th> -->
+                        <th>Responsável</th>
                         <th>Data Inicial</th>
-                        <!-- <th>Data Final</th> -->
+                        <th>Data Final</th>
                         <th>Venc. Garantia</th>
-                        <!-- <th>Valor Total</th> -->
+                        <th>Valor Total</th>
                         <th>Valor Total (Faturado)</th>
                         <th>Status</th>
-                        <!--<th>T. Garantia</th> -->
+                        <th>T. Garantia</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -72,6 +73,7 @@
                                     <td colspan="10">Nenhuma OS Cadastrada</td>
                                   </tr>';
                         }
+                        $this->load->model('os_model');
                         foreach ($results as $r) {
                             $dataInicial = date(('d/m/Y'), strtotime($r->dataInicial));
                             if ($r->dataFinal != null) {
@@ -80,6 +82,7 @@
                                 $dataFinal = "";
                             }
                             switch ($r->status) {
+                                case 'Negociação':
                                 case 'Aberto':
                                     $cor = '#00cd00';
                                     break;
@@ -113,35 +116,25 @@
 
                             echo '<tr>';
                             echo '<td>' . $r->idOs . '</td>';
-							echo '<td><a href="' . base_url() . 'index.php/clientes/visualizar/' . $r->clientes_id . '">' . $r->nomeCliente . '</a></td>';
-                            //echo '<td>' . $r->nome . '</td>';
+                            echo '<td>' . $r->nomeCliente . '</td>';
+                            echo '<td>' . $r->nome . '</td>';
                             echo '<td>' . $dataInicial . '</td>';
-                            //echo '<td>' . $dataFinal . '</td>';
+                            echo '<td>' . $dataFinal . '</td>';
                             echo '<td>' . $vencGarantia. '</td>';
-                            //echo '<td>R$ ' . number_format($r->totalProdutos + $r->totalServicos, 2, ',', '.') . '</td>';
+                            echo '<td>R$ ' . number_format($r->totalProdutos + $r->totalServicos, 2, ',', '.') . '</td>';
                             echo '<td>R$ ' . number_format($r->valorTotal, 2, ',', '.') . '</td>';
                             echo '<td><span class="badge" style="background-color: ' . $cor . '; border-color: ' . $cor . '">' . $r->status . '</span> </td>';
-                            //echo '<td>' . $r->refGarantia . '</td>';
+                            echo '<td>' . $r->refGarantia . '</td>';
                             echo '<td>';
                             if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')) {
                                 echo '<a style="margin-right: 1%" href="' . base_url() . 'index.php/os/visualizar/' . $r->idOs . '" class="btn tip-top" title="Ver mais detalhes"><i class="fas fa-eye"></i></a>';
-                                //echo '<a style="margin-right: 1%" href="' . base_url() . 'index.php/os/imprimir/' . $r->idOs . '" target="_blank" class="btn btn-inverse tip-top" title="Imprimir Normal A4"><i class="fas fa-print"></i></a>';
-                                //echo '<a style="margin-right: 1%" href="' . base_url() . 'index.php/os/imprimirTermica/' . $r->idOs . '" target="_blank" class="btn btn-inverse tip-top" title="Imprimir Termica Não Fiscal"><i class="fas fa-print"></i></a>';
-
-                                $zapnumber = preg_replace("/[^0-9]/", "", $r->celular_cliente);
-								$total_os = number_format($r->totalProdutos + $r->totalServicos, 2, ',', '.');
-                                echo '<a class="btn btn-success tip-top" style="margin-right: 1%" title="Enviar Resumo Por WhatsApp" id="enviarWhatsApp" target="_blank" href="https://web.whatsapp.com/send?phone=55' . $zapnumber . '&text=Prezado(a)%20*' . $r->nomeCliente . '*.%0d%0a%0d%0aSua%20*O.S%20' . $r->idOs . '*%20referente%20ao%20equipamento%20*' . strip_tags($r->descricaoProduto) . '*%20foi%20atualizada%20para%20*' . $r->status . '*.%0d%0a%0d%0a*--------------%20Resumo:%20--------------' . '*%0d%0a%0d%0a*DEFEITO%20APRESENTADO:*%20' . '%0d%0a' . strip_tags($r->defeito) . '.%0d%0a%20*--------------------------------------*' . '%0d%0a%0d%0a*LAUDO%20TÉCNICO:*%20' . '%0d%0a' . strip_tags($r->laudoTecnico) . '%0d%0a%20*--------------------------------------*' . '%0d%0a%0d%0a*OBSERVAÇÕES:*%20' . '%0d%0a' . strip_tags($r->observacoes). '%0d%0a%20*--------------------------------------*' . '%0d%0a%0d%0aValor%20Total%20R$&#58%20*'. $total_os . '*%0d%0a%0d%0a' . '%0d%0a%0d%0aAcesse%20' . base_url() . 'cadastrar/' . '%20%20para%20saber%20mais%20detalhes%20ou%20entre%20em%20contato.%0d%0a%0d%0aAtenciosamente,%20*' . ($emitente ? $emitente[0]->nome : '') . '%20' . ($emitente ? $emitente[0]->telefone : '') . '*%0d%0a*essa%20e%20uma%20msg%20automatica.*"><i class="fab fa-whatsapp" style="font-size:16px;"></i></a>';
-                                //echo '<a style="margin-right: 1%" href="' . base_url() . 'index.php/os/enviar_email/' . $r->idOs . '" class="btn btn-warning tip-top" title="Enviar por E-mail"><i class="fas fa-envelope"></i></a>';
                             }
-                            if ($this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')) {
+                            if ($this->permission->checkPermission($this->session->userdata('permissao'), 'eOs') && ($r->status != "Cancelado" && $r->status != "Faturado" && $r->faturado != 1)) {
                                 echo '<a style="margin-right: 1%" href="' . base_url() . 'index.php/os/editar/' . $r->idOs . '" class="btn btn-info tip-top" title="Editar OS"><i class="fas fa-edit"></i></a>';
                             }
-                            if ($this->permission->checkPermission($this->session->userdata('permissao'), 'dOs')) {
+                            if ($this->permission->checkPermission($this->session->userdata('permissao'), 'dOs') && ($r->status != "Cancelado" && $r->status != "Faturado" && $r->faturado != 1)) {
                                 echo '<a href="#modal-excluir" role="button" data-toggle="modal" os="' . $r->idOs . '" class="btn btn-danger tip-top" title="Excluir OS"><i class="fas fa-trash-alt"></i></a>  ';
                             }
-							if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')) {
-								echo '<a style="margin-right: 1%" target="_new" href="https://www.linkcorreios.com.br/' . $r->rastreio . '" class="btn btn-primary tip-top" title="Rastreio Correio"><i class="fas fa-search-location"></i></a>';
-								}
                             echo  '</td>';
                             echo '</tr>';
                         } ?>

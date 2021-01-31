@@ -69,6 +69,7 @@ class Os extends MY_Controller
             $this->uri->segment(3)
         );
 
+        $this->data['texto_de_notificacao'] = $this->data['configuration']['notifica_whats'];
         $this->data['emitente'] = $this->mapos_model->getEmitente();
         $this->data['view'] = 'os/os';
         return $this->layout();
@@ -159,7 +160,7 @@ class Os extends MY_Controller
                     $this->enviarOsPorEmail($idOs, $remetentes, 'Ordem de Serviço - Criada');
                 }
 
-                $this->session->set_flashdata('success', 'OS adicionada com sucesso, você pode adicionar produtos ou serviços a essa OS nas abas de "Produtos" e "Serviços"!');
+                $this->session->set_flashdata('success', 'OS adicionada com sucesso, você pode adicionar produtos ou serviços a essa OS nas abas de Produtos e Serviços!');
                 log_info('Adicionou uma OS');
                 redirect(site_url('os/editar/') . $id);
             } else {
@@ -185,6 +186,7 @@ class Os extends MY_Controller
 
         $this->load->library('form_validation');
         $this->data['custom_error'] = '';
+        $this->data['texto_de_notificacao'] = $this->data['configuration']['notifica_whats'];
 
         if ($this->form_validation->run('os') == false) {
             $this->data['custom_error'] = (validation_errors() ? '<div class="form_error">' . validation_errors() . '</div>' : false);
@@ -216,6 +218,13 @@ class Os extends MY_Controller
                 'usuarios_id' => $this->input->post('usuarios_id'),
                 'clientes_id' => $this->input->post('clientes_id'),
             ];
+
+            $currentOS = $this->os_model->getById($this->input->post('idOs'));
+            if ($currentOS->status == "Cancelado" || $currentOS->status == "Faturado" || $currentOS->faturado == 1) {
+                $this->session->set_flashdata('error', 'Esta OS já foi cancelada e/ou faturada, seu status não pode ser alterado e nem suas informações atualizada, por favor abrir uma nova OS.');
+
+                redirect(site_url('os'));
+            }
 
             if ($this->os_model->edit('os', $data, 'idOs', $this->input->post('idOs')) == true) {
                 $this->load->model('mapos_model');
@@ -267,6 +276,11 @@ class Os extends MY_Controller
         $this->data['anexos'] = $this->os_model->getAnexos($this->uri->segment(3));
         $this->data['anotacoes'] = $this->os_model->getAnotacoes($this->uri->segment(3));
 
+        if ($return = $this->os_model->valorTotalOS($this->data['servicos'], $this->data['produtos'])) {
+            $this->data['totalServico'] = $return['totalServico'];
+            $this->data['totalProdutos'] = $return['totalProdutos'];
+        }
+
         $this->load->model('mapos_model');
         $this->data['emitente'] = $this->mapos_model->getEmitente();
 
@@ -287,71 +301,31 @@ class Os extends MY_Controller
         }
 
         $this->data['custom_error'] = '';
-        $this->load->model('mapos_model');
-        $this->load->model('pagamentos_model');
+        $this->data['texto_de_notificacao'] = $this->data['configuration']['notifica_whats'];
 
+        $this->load->model('mapos_model');
         $this->data['result'] = $this->os_model->getById($this->uri->segment(3));
         $this->data['produtos'] = $this->os_model->getProdutos($this->uri->segment(3));
         $this->data['servicos'] = $this->os_model->getServicos($this->uri->segment(3));
-        $this->data['pagamento'] = $this->pagamentos_model->getPagamentos($this->uri->segment(3));
         $this->data['emitente'] = $this->mapos_model->getEmitente();
+        $this->data['anexos'] = $this->os_model->getAnexos($this->uri->segment(3));
+        $this->data['anotacoes'] = $this->os_model->getAnotacoes($this->uri->segment(3));
+        $this->data['modalGerarPagamento'] = $this->load->view(
+            'cobrancas/modalGerarPagamento',
+            [
+                'id' => $this->uri->segment(3),
+                'tipo' => 'os',
+            ],
+            true
+        );
+        $this->data['view'] = 'os/visualizarOs';
 
-        if ($this->data['pagamento']) {
-            $this->load->library('Gateways/MercadoPago', null, 'MercadoPago');
+        if ($return = $this->os_model->valorTotalOS($this->data['servicos'], $this->data['produtos'])) {
+            $this->data['totalServico'] = $return['totalServico'];
+            $this->data['totalProdutos'] = $return['totalProdutos'];
         }
 
-        $this->data['view'] = 'os/visualizarOs';
         return $this->layout();
-    }
-
-    public function gerarPagamentoGerencianetBoleto()
-    {
-
-        $this->load->library('Gateways/GerencianetSdk', null, 'GerencianetSdk');
-
-        $this->load->model('pagamentos_model');
-        $pagamentoM = $this->pagamentos_model->getPagamentos($this->uri->segment(3));
-
-        $pagamento = $this->GerencianetSdk->gerarBoleto(
-            $pagamentoM->client_id,
-            $pagamentoM->client_secret,
-            $this->input->post('nomeCliente'),
-            $this->input->post('emailCliente'),
-            $this->input->post('documentoCliente'),
-            $this->input->post('celular_cliente'),
-            $this->input->post('ruaCliente'),
-            $this->input->post('numeroCliente'),
-            $this->input->post('bairroCliente'),
-            $this->input->post('cidadeCliente'),
-            $this->input->post('estadoCliente'),
-            $this->input->post('cepCliente'),
-            $this->input->post('idOs'),
-            $this->input->post('titleBoleto'),
-            $this->input->post('totalValor'),
-            intval($this->input->post('quantidade'))
-        );
-
-        print_r($pagamento);
-    }
-
-    public function gerarPagamentoGerencianetLink()
-    {
-
-        $this->load->library('Gateways/GerencianetSdk', null, 'GerencianetSdk');
-
-        $this->load->model('pagamentos_model');
-        $pagamentoM = $this->pagamentos_model->getPagamentos($this->uri->segment(3));
-
-        $pagamento = $this->GerencianetSdk->gerarLink(
-            $pagamentoM->client_id,
-            $pagamentoM->client_secret,
-            $this->input->post('idOs'),
-            $this->input->post('titleLink'),
-            $this->input->post('totalValor'),
-            intval($this->input->post('quantidade'))
-        );
-
-        print_r($pagamento);
     }
 
     public function imprimir()
@@ -478,10 +452,32 @@ class Os extends MY_Controller
         }
 
         $id = $this->input->post('id');
-        $os = $this->os_model->getById($id);
+        $os = $this->os_model->getByIdCobrancas($id);
         if ($os == null) {
-            $this->session->set_flashdata('error', 'Erro ao tentar excluir OS.');
-            redirect(base_url() . 'index.php/os/gerenciar/');
+            $os = $this->os_model->getById($id);
+            if ($os == null) {
+                $this->session->set_flashdata('error', 'Erro ao tentar excluir OS.');
+                redirect(base_url() . 'index.php/os/gerenciar/');
+            }
+        }
+
+        if ($os->idCobranca != null) {
+            if ($os->status == "canceled") {
+                $this->os_model->delete('cobrancas', 'os_id', $id);
+            } else {
+                $this->session->set_flashdata('error', 'Existe uma cobrança associada a esta OS, deve cancelar e/ou excluir a cobrança primeiro!');
+                redirect(site_url('os/gerenciar/'));
+            }
+        }
+
+        if ($produtos = $this->os_model->getProdutos($id)) {
+            $this->load->model('produtos_model');
+            if ($this->data['configuration']['control_estoque']) {
+                foreach ($produtos as $p) {
+                    $this->produtos_model->updateEstoque($p->produtos_id, $p->quantidade, '+');
+                    log_info('ESTOQUE: produto id ' . $p->produtos_id. ' teve baixa de estoque quantidade: '.$p->quantidade);
+                }
+            }
         }
 
         $this->os_model->delete('servicos_os', 'os_id', $id);
@@ -570,6 +566,13 @@ class Os extends MY_Controller
             'os_id' => $this->input->post('idOsProduto'),
         ];
 
+        $id = $this->input->post('idOsProduto');
+        $os = $this->os_model->getById($id);
+        if ($os == null) {
+            $this->session->set_flashdata('error', 'Erro ao tentar inserir produto na OS.');
+            redirect(base_url() . 'index.php/os/gerenciar/');
+        }
+
         if ($this->os_model->add('produtos_os', $data) == true) {
             $this->load->model('produtos_model');
 
@@ -594,6 +597,12 @@ class Os extends MY_Controller
     {
         $id = $this->input->post('idProduto');
         $idOs = $this->input->post('idOs');
+
+        $os = $this->os_model->getById($idOs);
+        if ($os == null) {
+            $this->session->set_flashdata('error', 'Erro ao tentar excluir produto na OS.');
+            redirect(base_url() . 'index.php/os/gerenciar/');
+        }
 
         if ($this->os_model->delete('produtos_os', 'idProdutos_os', $id) == true) {
             $quantidade = $this->input->post('quantidade');
@@ -815,7 +824,16 @@ class Os extends MY_Controller
                 'forma_pgto' => $this->input->post('formaPgto'),
                 'tipo' => $this->input->post('tipo'),
                 'observacoes' => set_value('observacoes'),
+                'usuarios_id' => $this->session->userdata('id'),
             ];
+
+            $currentOS = $this->os_model->getById($this->input->post('os_id'));
+            if ($currentOS->status == "Cancelado" || $currentOS->status == "Faturado" || $currentOS->faturado == 1) {
+                return $this->output
+                    ->set_content_type('application/json')
+                    ->set_status_header(200)
+                    ->set_output(json_encode(['result' => false]));
+            }
 
             if ($this->os_model->add('lancamentos', $data) == true) {
                 $os = $this->input->post('os_id');
