@@ -15,9 +15,18 @@ $config['app_name'] = 'Map-OS';
  * Descrição do sistema
  */
 $config['app_subname'] = 'Sistema de Controle de Ordens de Serviço';
+/*
+
+
+* botao de ajuda na area do cliente
+ */
+$config['whatsapp'] = '550000000000'; // whatsapp para suporte a area do cliente examplo (11)9 88264272 deve coloca assim 5598988264272
+$config['telefone'] = '550000000000'; //tefefone para suporte a area do cliente examplo (11)9 88264272 deve coloca assim 5598988264272
+$config['email'] = 'admin@admin.com'; //coloque o email para suporte a area do cliente
 
 
 /*
+
 |--------------------------------------------------------------------------
 | Base Site URL
 |--------------------------------------------------------------------------
