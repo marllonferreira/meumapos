@@ -17,10 +17,6 @@
     <script type="text/javascript" src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.min.js"></script>
     <script type="text/javascript" src="<?= base_url(); ?>assets/js/sweetalert.min.js"></script>
     <link rel="shortcut icon" href="<?php echo base_url(); ?>assets/img/fav.png">
-    <!--começo-->
-	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/kc_fab/dist/css/kc.fab.css"/>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
-	<!--fim-->
 </head>
 
 <body>
@@ -104,49 +100,6 @@
 
 <script src="<?php echo base_url(); ?>assets/js/bootstrap.min.js"></script>
 
-<!------------------começo------------------------------->
-<div class="kc_fab_wrapper" ></div>
-
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="<?php echo base_url(); ?>assets/kc_fab/dist/js/kc.fab.min.js"></script>
-        <script>
-            $(document).ready(function(){
-                var links = [
-                    {
-                        "bgcolor":"blue", // aqui pode muda a cor do botao pricipal
-                        "icon":"<i class='fa fa-question-circle'></i>", // aqui pode muda o icone do botao pricipal
-                    },
-                    {
-                        "url":"tel://<?= $this->config->item('telefone'); ?>",
-                        "bgcolor":"red", // aqui pode muda a cor do botao
-                        "color":"#fffff", // aqui pode muda a cor de fundo do botao
-						"title":"Telefone", // aqui pode muda o titulo botao
-                        "icon":"<i class='fa fa-phone'></i>", // aqui pode muda o icone do botao
-                        
-                    },
-                    {
-                        "url":"mailto:<?= $this->config->item('email'); ?>",
-                        "bgcolor":"white",
-                        "color":"black",
-						"title":"E-mail",
-                        "icon":"<i class='fa fa-envelope-o'></i>"
-                    },
-                   
-                    {
-                        "url":"https://api.whatsapp.com/send?phone=<?= $this->config->item('whatsapp'); ?>&text=oi",
-                        "bgcolor":"green",
-						"background-color":"#FFFF00",
-                        "color":"white",
-						"title":"whatsapp",
-                        "icon":"<i class='fa fa-whatsapp'></i>",
-                        "target":"_blank"
-                    }
-					
-                ]
-                $('.kc_fab_wrapper').kc_fab(links);
-            })
-        </script>
-<!-----------fim------------------>
 
 </body>
 
