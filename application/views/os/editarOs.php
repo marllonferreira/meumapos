@@ -1064,7 +1064,17 @@
         });
 
         $('.editor').trumbowyg({
-            lang: 'pt_br'
+            lang: ['pt_br'],
+			btns: [
+        ['viewHTML'],
+		['undo', 'redo'], // Only supported in Blink browsers
+	    ['strong', 'em', 'del'],
+		['link'],
+		['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+		['unorderedList', 'orderedList'],
+        ['removeformat'],
+        ['fullscreen']
+		]
         });
     });
 </script>
