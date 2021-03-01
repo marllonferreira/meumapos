@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit8619f387b0cee8f7d94f316de3435128
+class ComposerStaticInit0794951a5d2bc21b9592cfdd634b3fa3
 {
     public static $files = array (
         '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
@@ -22,6 +22,11 @@ class ComposerStaticInit8619f387b0cee8f7d94f316de3435128
         array (
             'setasign\\Fpdi\\' => 14,
         ),
+        'c' => 
+        array (
+            'chillerlan\\Settings\\' => 20,
+            'chillerlan\\QRCode\\' => 18,
+        ),
         'W' => 
         array (
             'Whoops\\' => 7,
@@ -36,6 +41,7 @@ class ComposerStaticInit8619f387b0cee8f7d94f316de3435128
         array (
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
+            'Piggly\\Pix\\' => 11,
             'PhpOffice\\PhpWord\\' => 18,
         ),
         'M' => 
@@ -78,6 +84,14 @@ class ComposerStaticInit8619f387b0cee8f7d94f316de3435128
         array (
             0 => __DIR__ . '/..' . '/setasign/fpdi/src',
         ),
+        'chillerlan\\Settings\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/chillerlan/php-settings-container/src',
+        ),
+        'chillerlan\\QRCode\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/chillerlan/php-qrcode/src',
+        ),
         'Whoops\\' => 
         array (
             0 => __DIR__ . '/..' . '/filp/whoops/src/Whoops',
@@ -101,6 +115,10 @@ class ComposerStaticInit8619f387b0cee8f7d94f316de3435128
         'Psr\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
+        'Piggly\\Pix\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/piggly/php-pix/src',
         ),
         'PhpOffice\\PhpWord\\' => 
         array (
@@ -207,10 +225,10 @@ class ComposerStaticInit8619f387b0cee8f7d94f316de3435128
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit8619f387b0cee8f7d94f316de3435128::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit8619f387b0cee8f7d94f316de3435128::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit8619f387b0cee8f7d94f316de3435128::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit8619f387b0cee8f7d94f316de3435128::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit0794951a5d2bc21b9592cfdd634b3fa3::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit0794951a5d2bc21b9592cfdd634b3fa3::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit0794951a5d2bc21b9592cfdd634b3fa3::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit0794951a5d2bc21b9592cfdd634b3fa3::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -14,24 +14,42 @@ class InstalledVersions
 private static $installed = array (
   'root' => 
   array (
-    'pretty_version' => '1.0.0+no-version-set',
-    'version' => '1.0.0.0',
+    'pretty_version' => 'dev-main',
+    'version' => 'dev-main',
     'aliases' => 
     array (
     ),
-    'reference' => NULL,
+    'reference' => '2228ddfa24c2926e71306130dbc5abf97919a951',
     'name' => '__root__',
   ),
   'versions' => 
   array (
     '__root__' => 
     array (
-      'pretty_version' => '1.0.0+no-version-set',
-      'version' => '1.0.0.0',
+      'pretty_version' => 'dev-main',
+      'version' => 'dev-main',
       'aliases' => 
       array (
       ),
-      'reference' => NULL,
+      'reference' => '2228ddfa24c2926e71306130dbc5abf97919a951',
+    ),
+    'chillerlan/php-qrcode' => 
+    array (
+      'pretty_version' => '3.4.0',
+      'version' => '3.4.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'd8bf297e6843a53aeaa8f3285ce04fc349d133d6',
+    ),
+    'chillerlan/php-settings-container' => 
+    array (
+      'pretty_version' => '1.2.1',
+      'version' => '1.2.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'b9b0431dffd74102ee92348a63b4c33fc8ba639b',
     ),
     'codeigniter/framework' => 
     array (
@@ -253,12 +271,21 @@ private static $installed = array (
     ),
     'phpoffice/phpword' => 
     array (
-      'pretty_version' => 'dev-master',
-      'version' => 'dev-master',
+      'pretty_version' => '0.18.0',
+      'version' => '0.18.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'a1e81d75ff26c55102cae6f61c64727edbfa4316',
+      'reference' => '1bd7cd62381051db6d6c7174d3c95a3ada48bc0f',
+    ),
+    'piggly/php-pix' => 
+    array (
+      'pretty_version' => '1.1.2',
+      'version' => '1.1.2.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '59789878f9fd7c1dc6c53b761f641ad56e40ab90',
     ),
     'psr/http-message' => 
     array (
@@ -296,12 +323,12 @@ private static $installed = array (
     ),
     'setasign/fpdi' => 
     array (
-      'pretty_version' => 'v2.3.5',
-      'version' => '2.3.5.0',
+      'pretty_version' => 'v2.3.6',
+      'version' => '2.3.6.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'f2246c8669bd25834f5c264425eb0e250d7a9312',
+      'reference' => '6231e315f73e4f62d72b73f3d6d78ff0eed93c31',
     ),
     'symfony/polyfill-intl-idn' => 
     array (
