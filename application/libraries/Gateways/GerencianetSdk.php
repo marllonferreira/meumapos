@@ -176,7 +176,7 @@ class GerencianetSdk extends BasePaymentGateway
             throw new \Exception('OS ou venda com valor negativo ou zero!');
         }
 
-        if($err = $this->errosCadastro($entity)) {
+        if ($err = $this->errosCadastro($entity)) {
             throw new \Exception($err);
         }
         
@@ -218,7 +218,7 @@ class GerencianetSdk extends BasePaymentGateway
                 [
                     'name' => $tipo === PaymentGateway::PAYMENT_TYPE_OS ? "OS #$id" : "Venda #$id",
                     'amount' => 1,
-                    'value' => round(($totalProdutos + $totalServicos),2)*100
+                    'value' => getMoneyAsCents($totalProdutos + $totalServicos)
                 ]
             ],
             'metadata' => [
@@ -245,7 +245,7 @@ class GerencianetSdk extends BasePaymentGateway
             'expire_at' => $result['data']['expire_at'],
             'charge_id' => $result['data']['charge_id'],
             'status' => $result['data']['status'],
-            'total' => round(($totalProdutos + $totalServicos),2)*100,
+            'total' => getMoneyAsCents($totalProdutos + $totalServicos),
             'payment' => $result['data']['payment'],
             'clientes_id' => $entity->idClientes,
             'payment_method' => 'boleto',
@@ -301,7 +301,7 @@ class GerencianetSdk extends BasePaymentGateway
             throw new \Exception('OS ou venda com valor negativo ou zero!');
         }
 
-        if($err = $this->errosCadastro($entity)) {
+        if ($err = $this->errosCadastro($entity)) {
             throw new \Exception($err);
         }
 
@@ -312,7 +312,7 @@ class GerencianetSdk extends BasePaymentGateway
                     [
                         'name' => $tipo === PaymentGateway::PAYMENT_TYPE_OS ? "OS #$id" : "Venda #$id",
                         'amount' => 1,
-                        'value' => round(($totalProdutos + $totalServicos),2)*100
+                        'value' => getMoneyAsCents($totalProdutos + $totalServicos)
                     ]
                 ],
                 'metadata' => [
@@ -347,7 +347,7 @@ class GerencianetSdk extends BasePaymentGateway
             'expire_at' => $result['data']['expire_at'],
             'charge_id' => $result['data']['charge_id'],
             'status' => $result['data']['status'],
-            'total' => round(($totalProdutos + $totalServicos),2)*100,
+            'total' => getMoneyAsCents($totalProdutos + $totalServicos),
             'clientes_id' => $entity->idClientes,
             'payment_method' => 'link',
             'payment_gateway' => 'GerencianetSdk',
