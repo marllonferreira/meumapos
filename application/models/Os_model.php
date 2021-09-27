@@ -1,6 +1,6 @@
 <?php
 
-use Piggly\Pix\Payload;
+use Piggly\Pix\StaticPayload;
 
 class Os_model extends CI_Model
 {
@@ -50,7 +50,7 @@ class Os_model extends CI_Model
             }
         }
 
-        $this->db->select($fields . ',clientes.nomeCliente, clientes.celular as celular_cliente, usuarios.nome, garantias.*');
+        $this->db->select($fields . ',clientes.idClientes, clientes.nomeCliente, clientes.celular as celular_cliente, usuarios.nome, garantias.*');
         $this->db->from($table);
         $this->db->join('clientes', 'clientes.idClientes = os.clientes_id');
         $this->db->join('usuarios', 'usuarios.idUsuarios = os.usuarios_id');
@@ -94,7 +94,7 @@ class Os_model extends CI_Model
 
     public function getById($id)
     {
-        $this->db->select('os.*, clientes.*, clientes.celular as celular_cliente, clientes.documento as documento_cliente, garantias.refGarantia, usuarios.telefone as telefone_usuario, usuarios.email as email_usuario, usuarios.nome');
+        $this->db->select('os.*, clientes.*, clientes.celular as celular_cliente, garantias.refGarantia, usuarios.telefone as telefone_usuario, usuarios.email as email_usuario, usuarios.nome');
         $this->db->from('os');
         $this->db->join('clientes', 'clientes.idClientes = os.clientes_id');
         $this->db->join('usuarios', 'usuarios.idUsuarios = os.usuarios_id');
@@ -359,17 +359,15 @@ class Os_model extends CI_Model
             return;
         }
 
-        $pix = (new Payload())
+        $pix = (new StaticPayload())
             ->applyValidCharacters()
             ->applyUppercase()
-            ->applyEmailWhitespace()
             ->setPixKey(getPixKeyType($pixKey), $pixKey)
-            ->setMerchantName($emitente->nome)
-            ->setMerchantCity($emitente->cidade)
+            ->setMerchantName($emitente->nome, true)
+            ->setMerchantCity($emitente->cidade, true)
             ->setAmount($amount)
             ->setTid($id)
-            ->setDescription(sprintf("%s - Pagamento - OS %s", $emitente->nome, $id))
-            ->setAsReusable(false);
+            ->setDescription(sprintf("%s OS %s", $emitente->nome, $id), true);
 
         return $pix->getQRCode();
     }
