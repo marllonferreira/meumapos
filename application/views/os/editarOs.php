@@ -201,7 +201,7 @@
                                     </div>
                                     <div class="span2">
                                         <label for="">Quantidade</label>
-                                        <input type="text" placeholder="Quantidade" id="quantidade" name="quantidade" class="span12" />
+                                        <input type="number" placeholder="Quantidade" id="quantidade" name="quantidade" class="span12" min="1" max="999" step="1" autocomplete= "off" value="1" />
                                     </div>
                                     <div class="span2">
                                         <label for="">&nbsp;</label>
@@ -264,7 +264,7 @@
                                     </div>
                                     <div class="span2">
                                         <label for="">Quantidade</label>
-                                        <input type="text" placeholder="Quantidade" id="quantidade_servico" name="quantidade" class="span12" />
+                                        <input type="number" placeholder="Quantidade" id="quantidade_servico" name="quantidade" class="span12" min="1" max="999" step="1" autocomplete= "off" value="1" />
                                     </div>
                                     <div class="span2">
                                         <label for="">&nbsp;</label>
@@ -476,7 +476,7 @@
             <div class="span12" style="margin-left: 0">
                 <div class="span4" style="margin-left: 0">
                     <label for="vencimento">Data Entrada*</label>
-                    <input class="span12 datepicker" autocomplete="on" id="vencimento" type="text" name="vencimento" />
+                    <input class="span12 datepicker" autocomplete="on" id="vencimento" type="text" name="vencimento" value="<?php echo date('d/m/Y', strtotime($result->dataInicial)); ?>" />
                 </div>
             </div>
             <div class="span12" style="margin-left: 0">
@@ -487,7 +487,7 @@
                 <div id="divRecebimento" class="span8" style=" display: none">
                     <div class="span6">
                         <label for="recebimento">Data Recebimento</label>
-                        <input class="span12 datepicker" autocomplete="on" id="recebimento" type="text" name="recebimento" />
+                        <input class="span12 datepicker" autocomplete="on" id="recebimento" type="text" name="recebimento" value="<?php echo date('d/m/Y'); ?>" />
                     </div>
                     <div class="span6">
                         <label for="formaPgto">Forma Pgto</label>
@@ -512,7 +512,7 @@
 </div>
 
 <script type="text/javascript" src="<?php echo base_url() ?>assets/js/jquery.validate.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/maskmoney.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/maskmoney2.js"></script>
 
 <script type="text/javascript">
     function calcular() {
