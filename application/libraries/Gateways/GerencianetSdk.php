@@ -6,7 +6,7 @@ use Libraries\Gateways\Contracts\PaymentGateway;
 
 class GerencianetSdk extends BasePaymentGateway
 {
-    /** @var Gerencianet $gerenciaNetApi */
+    /** Gerencianet $gerenciaNetApi */
     private $gerenciaNetApi;
 
     private $gerenciaNetConfig;
@@ -179,7 +179,7 @@ class GerencianetSdk extends BasePaymentGateway
         if ($err = $this->errosCadastro($entity)) {
             throw new \Exception($err);
         }
-
+        
         $address = [
             'street' => $entity->rua,
             'number' => $entity->numero,
@@ -315,6 +315,9 @@ class GerencianetSdk extends BasePaymentGateway
                         'value' => getMoneyAsCents($totalProdutos + $totalServicos)
                     ]
                 ],
+                'metadata' => [
+                    'notification_url' => 'http://mapos.com.br/'
+                ],
             ]
         );
         if (intval($response['code']) !== 200) {
@@ -358,6 +361,7 @@ class GerencianetSdk extends BasePaymentGateway
         } else {
             $data['vendas_id'] = $id;
         }
+        
 
         if ($id = $this->ci->cobrancas_model->add('cobrancas', $data, true)) {
             $data['idCobranca'] = $id;

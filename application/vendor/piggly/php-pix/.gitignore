@@ -47,7 +47,6 @@ coverage
 dist
 node_modules
 rules
-debug
 
 # Files
 *.zip

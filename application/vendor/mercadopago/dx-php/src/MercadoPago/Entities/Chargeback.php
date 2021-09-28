@@ -1,7 +1,6 @@
 <?php
 /**
  * Chargeback class file
- * @link https://www.mercadopago.com/developers/en/reference/chargebacks/_chargebacks_id/get/ Click here for more infos
  */
 namespace MercadoPago;
 

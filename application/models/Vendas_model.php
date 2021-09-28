@@ -1,6 +1,6 @@
 <?php
 
-use Piggly\Pix\StaticPayload;
+use Piggly\Pix\Payload;
 
 if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
@@ -187,15 +187,17 @@ class Vendas_model extends CI_Model
             return;
         }
 
-        $pix = (new StaticPayload())
+        $pix = (new Payload())
             ->applyValidCharacters()
             ->applyUppercase()
+            ->applyEmailWhitespace()
             ->setPixKey(getPixKeyType($pixKey), $pixKey)
-            ->setMerchantName($emitente->nome, true)
-            ->setMerchantCity($emitente->cidade, true)
+            ->setMerchantName($emitente->nome)
+            ->setMerchantCity($emitente->cidade)
             ->setAmount($amount)
             ->setTid($id)
-            ->setDescription(sprintf("%s Venda %s", $emitente->nome, $id), true);
+            ->setDescription(sprintf("%s - Pagamento - Venda %s", $emitente->nome, $id))
+            ->setAsReusable(false);
 
         return $pix->getQRCode();
     }

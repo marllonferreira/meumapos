@@ -1,4 +1,7 @@
 <?php
+/**
+ * Card Token class file
+ */
 namespace MercadoPago;
 
 use MercadoPago\Annotation\RestMethod;
@@ -7,8 +10,6 @@ use MercadoPago\Annotation\Attribute;
 
 /**
  * Card Token class
- * This class will allow you to send your customers card data for Mercado Pago server and receive a token to complete the payments transactions.
- * 
  * @RestMethod(resource="/v1/card_tokens?public_key=:public_key", method="create")
  * @RestMethod(resource="/v1/card_tokens?public_key=:public_key", method="read")
  * @RestMethod(resource="/v1/card_tokens?public_key=:public_key", method="update")

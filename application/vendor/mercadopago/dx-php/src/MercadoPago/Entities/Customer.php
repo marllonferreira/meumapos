@@ -1,4 +1,7 @@
 <?php
+/**
+ * Customer class file
+ */
 namespace MercadoPago;
 
 use MercadoPago\Annotation\RestMethod;
@@ -6,12 +9,7 @@ use MercadoPago\Annotation\RequestParam;
 use MercadoPago\Annotation\Attribute;
 
 /**
- * This class allows you to store customers data safely to improve the shopping experience.
- *  
- * This will allow your customer to complete their purchases much faster and easily when used in conjunction with the Cards class.
- *
- * @link https://mercadopago.com/developers/en/guides/online-payments/web-tokenize-checkout/customers-and-cards Click here for more infos
- * 
+ * Customer class
  * @RestMethod(resource="/v1/customers/:id", method="read")
  * @RestMethod(resource="/v1/customers/search", method="search")
  * @RestMethod(resource="/v1/customers/", method="create")

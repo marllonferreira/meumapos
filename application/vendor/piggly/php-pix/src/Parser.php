@@ -1,9 +1,7 @@
 <?php
 namespace Piggly\Pix;
 
-use Piggly\Pix\Exceptions\CannotParseKeyTypeException;
-use Piggly\Pix\Exceptions\InvalidPixKeyException;
-use Piggly\Pix\Exceptions\InvalidPixKeyTypeException;
+use Exception;
 
 /**
  * The Pix Parser class.
@@ -55,37 +53,40 @@ class Parser
 	 * Validate a $value based in the respective pix $key.
 	 * 
 	 * @since 1.0.0
-	 * @since 1.2.0 Added a custom exception error
 	 * @param string $keyType Pix key type.
 	 * @param string $value Pix key value.
-	 * @throws InvalidPixKeyTypeException When pix key type is invalid.
-	 * @throws InvalidPixKeyException When pix key is invalid base in key type.
+	 * @throws Exception
 	 */
 	public static function validate ( string $keyType, string $keyValue )
 	{
 		if ( !in_array($keyType, [self::KEY_TYPE_RANDOM, self::KEY_TYPE_DOCUMENT, self::KEY_TYPE_EMAIL, self::KEY_TYPE_PHONE]) )
-		{ throw new InvalidPixKeyTypeException($keyType); }
+		{ throw new Exception(sprintf('A chave `%s` é desconhecida.', $keyType)); }
 
 		$validate = false;
+		$alias    = 'Chave Desconhecida';
 
 		switch ( $keyType )
 		{
 			case self::KEY_TYPE_RANDOM:
 				$validate = self::validateRandom($keyValue);
+				$alias    = self::getAlias($keyType);
 				break;
 			case self::KEY_TYPE_DOCUMENT:
 				$validate = self::validateDocument($keyValue);
+				$alias    = self::getAlias($keyType);
 				break;
 			case self::KEY_TYPE_EMAIL:
 				$validate = self::validateEmail($keyValue);
+				$alias    = self::getAlias($keyType);
 				break;
 			case self::KEY_TYPE_PHONE:
 				$validate = self::validatePhone($keyValue);
+				$alias    = self::getAlias($keyType);
 				break;
 		}
 
 		if ( !$validate )
-		{ throw new InvalidPixKeyException($keyType, $keyValue); }
+		{ throw new Exception(sprintf('O valor `%s` para %s está inválido.', $alias, $keyValue)); }
 	}
 
 	/**
@@ -126,11 +127,10 @@ class Parser
 	 * Validates a CPF number.
 	 * 
 	 * @since 1.0.0
-	 * @since 1.2.0 Public function
 	 * @param string $document String with only numbers.
 	 * @return bool
 	 */
-	public static function validateCpf ( string $document ) : bool
+	protected static function validateCpf ( string $document ) : bool
 	{
 		// Only numbers
 		if ( !preg_match('/^[\d]{11}$/', $document) ) 
@@ -155,11 +155,10 @@ class Parser
 	 * Validates a CNPJ number.
 	 * 
 	 * @since 1.0.0
-	 * @since 1.2.0 Public function
 	 * @param string $document String with only numbers.
 	 * @return bool
 	 */
-	public static function validateCnpj ( string $document ) : bool
+	protected static function validateCnpj ( string $document ) : bool
 	{
 		// Only numbers
 		if ( !preg_match('/^[\d]{14}$/', $document) ) 
@@ -226,11 +225,10 @@ class Parser
 	 * Parse a $value based in the respective pix $key.
 	 * 
 	 * @since 1.0.0
-	 * @since 1.2.0 Custom exception error
 	 * @param string $key Pix key.
 	 * @param string $value Pix value.
 	 * @return string
-	 * @throws InvalidPixKeyTypeException pix key type is invalid
+	 * @throws Exception
 	 */
 	public static function parse ( string $key, string $value ) : string
 	{
@@ -246,7 +244,7 @@ class Parser
 				return self::parsePhone($value);
 		}
 
-		throw new InvalidPixKeyTypeException($key);
+		throw new Exception(sprintf('A chave `%s` é desconhecida.', $key));
 	}
 
 	/**
@@ -293,13 +291,12 @@ class Parser
 	 * Parse transaction id string to valid characters.
 	 * 
 	 * @since 1.1.2
-	 * @since 1.2.6 Return *** when $tid is equal to ***.
 	 * @param string $phone
 	 * @return string
 	 */
 	public static function parseTid ( string $tid = null )
 	{
-		if ( empty($tid) || $tid === '***' )
+		if ( empty($tid) )
 		{ return '***'; }
 
 		return preg_replace('/[^A-Za-z0-9]+/', '', $tid);
@@ -309,10 +306,9 @@ class Parser
 	 * Return the key type based in the pix key.
 	 * 
 	 * @since 1.1.0
-	 * @since 1.2.0 Custom exception error.
 	 * @param string $pixKey
 	 * @return string
-	 * @throws CannotParseKeyTypeException Cannot parse type of pix key
+	 * @throws Exception When an invalid type is found.
 	 */
 	public static function getKeyType ( string $pixKey ) : string
 	{
@@ -332,25 +328,6 @@ class Parser
 		if ( self::validatePhone($pixKey) )
 		{ return self::KEY_TYPE_PHONE; }
 
-		throw new CannotParseKeyTypeException($pixKey);
-	}
-
-	/**
-	 * Return a random string with 25 characters which contains
-	 * A-Z, a-z and 0-9.
-	 * 
-	 * @since 1.2.0
-	 * @return string
-	 */
-	public static function getRandom () : string
-	{
-		$chars  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-		$length = strlen($chars);
-		$random = '';
-
-		for ($i = 0; $i < 25; $i++) 
-		{ $random .= $chars[rand(0, $length - 1)]; }
-
-		return $random;
+		throw new Exception(sprintf('Não é possível determinar o tipo da chave `%s`', $pixKey));
 	}
 }

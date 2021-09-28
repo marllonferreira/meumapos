@@ -4,11 +4,6 @@ namespace Piggly\Pix;
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
 use Exception;
-use Piggly\Pix\Exceptions\EmvIdIsRequiredException;
-use Piggly\Pix\Exceptions\InvalidEmvFieldException;
-use Piggly\Pix\Exceptions\InvalidPixKeyTypeException;
-use Piggly\Pix\Exceptions\QRCodeNotSupported;
-use Piggly\Pix\Exceptions\RequiredPhpExtension;
 use Piggly\Pix\Parser;
 
 /**
@@ -102,10 +97,9 @@ class Payload
 	/**
 	 * Pix Transaction ID.
 	 * @since 1.0.0
-	 * @since Set *** as default value.
 	 * @var string
 	 */
-	protected $tid = '***';
+	protected $tid;
 
 	/**
 	 * Transaction amount.
@@ -119,7 +113,7 @@ class Payload
 	 * @since 1.0.0
 	 * @var boolean
 	 */
-	protected $reusable = true;
+	protected $reusable = false;
 
 	/**
 	 * The current pix code mounted.
@@ -150,22 +144,14 @@ class Payload
 	protected $upper = false;
 
 	/**
-	 * Ignore the point of initiation method.
-	 * @since 1.1.0
-	 * @var boolean
-	 */
-	protected $ignorePoIM = false;
-
-	/**
 	 * Replaces the @ character in e-mail key to a space.
-	 * 
+	 * DEPRECATED:
 	 * @param bool $apply
 	 * @since 1.1.0
-	 * @since 1.2.0 Descontinuada.
 	 * @return self
 	 * @deprecated Aplica-se apenas as versões Pix anteriores a 2.
 	 */
-	public function applyEmailWhitespace ( bool $apply = true )
+	public function applyEmailWhitespace ( bool $apply = true ) : self
 	{ $this->emailWhitespace = $apply; return $this; }
 
 	/**
@@ -175,7 +161,7 @@ class Payload
 	 * @since 1.1.0
 	 * @return self
 	 */
-	public function applyValidCharacters ( bool $apply = true )
+	public function applyValidCharacters ( bool $apply = true ) : self
 	{ $this->validCharacters = $apply; return $this; }
 
 	/**
@@ -185,18 +171,8 @@ class Payload
 	 * @since 1.1.0
 	 * @return self
 	 */
-	public function applyUppercase ( bool $apply = true )
+	public function applyUppercase ( bool $apply = true ) : self
 	{ $this->upper = $apply; return $this; }
-
-	/**
-	 * Ignore point of initiation method.
-	 * 
-	 * @param bool $apply
-	 * @since 1.2.4
-	 * @return self
-	 */
-	public function ignorePointOfInitiationMethod ( bool $apply = true )
-	{ $this->ignorePoIM = $apply; return $this; }
 
 	/**
 	 * Set the current pix key.
@@ -206,12 +182,10 @@ class Payload
 	 * @param string $keyType Pix key type.
 	 * @param string $pixKey Pix key.
 	 * @since 1.0.0
-	 * @since 1.2.0 Custom exception errors.
 	 * @return self
-	 * @throws InvalidPixKeyTypeException When pix key type is invalid.
-	 * @throws InvalidPixKeyException When pix key is invalid base in key type.
+	 * @throws Exception
 	 */
-	public function setPixKey ( string $keyType, string $pixKey )
+	public function setPixKey ( string $keyType, string $pixKey ) : self
 	{
 		// Validate Key
 		Parser::validate($keyType, $pixKey);
@@ -229,33 +203,15 @@ class Payload
 	 * Set the current pix description.
 	 * 
 	 * EMV -> ID 26 . ID 02
-	 * Max length 40
-	 * 
-	 * Merchant Account Information has size limit as 99
-	 * characters including:
-	 * 
-	 * GUI ID+SIZE = 04 chars
-	 * KEY ID+SIZE = 04 chars
-	 * GUI SIZE = 14 chars
-	 * KEY SIZE = 00..36 chars
-	 * 
-	 * The number of chars which has left will be vary based
-	 * in GUI + KEY size. Which means at least it will have
-	 * 40 chars available to description field. 
-	 * 
-	 * That's why we choose 40 chars as max length size.
+	 * Max length 36
 	 * 
 	 * @param string $description Pix description.
-	 * @param bool $applyMaxLength Apply max length to field. Apply by default.
 	 * @since 1.0.0
-	 * @since 1.2.0 Max size limit increased to 40 chars.
-	 * @since 1.2.4 Apply max length to field. Continue to apply by default.
 	 * @return self
 	 */
-	public function setDescription ( string $description, bool $applyMaxLength = true )
+	public function setDescription ( string $description ) : self
 	{ 
-		$description = $applyMaxLength ? $this->applyLength('Description', $description, 40) : $description;
-		$this->description = $this->replacesChar( $this->uppercase( $description ) ); 
+		$this->description = $this->applyLength( $this->replacesChar( $this->uppercase( $description ) ), 36); 
 		return $this; 
 	}
 
@@ -266,16 +222,13 @@ class Payload
 	 * Max length 25
 	 * 
 	 * @param string $merchantName Pix merchant name.
-	 * @param bool $applyMaxLength Apply max length to field.
 	 * @since 1.0.0
 	 * @since 1.0.2 Removed character limit.
 	 * @since 1.0.3 Removed applyLength function.
-	 * @since 1.2.4 Apply max length to field.
 	 * @return self
 	 */
-	public function setMerchantName ( string $merchantName, bool $applyMaxLength = false )
+	public function setMerchantName ( string $merchantName ) : self
 	{ 
-		$merchantName = $applyMaxLength ? $this->applyLength('Merchant Name', $merchantName, 25) : $merchantName;
 		$this->merchantName = $this->replacesChar( $this->uppercase( $merchantName ) ); 
 		return $this; 
 	}
@@ -287,16 +240,13 @@ class Payload
 	 * Max length 15
 	 * 
 	 * @param string $merchantCity Pix merchant city.
-	 * @param bool $applyMaxLength Apply max length to field.
 	 * @since 1.0.0
 	 * @since 1.0.2 Removed character limit.
 	 * @since 1.0.3 Removed applyLength function.
-	 * @since 1.2.4 Apply max length to field.
 	 * @return self
 	 */
-	public function setMerchantCity ( string $merchantCity, bool $applyMaxLength = false  )
+	public function setMerchantCity ( string $merchantCity ) : self
 	{ 
-		$merchantCity = $applyMaxLength ? $this->applyLength('Merchant City', $merchantCity, 15) : $merchantCity;
 		$this->merchantCity = $this->replacesChar( $this->uppercase( $merchantCity ) ); 
 		return $this; 
 	}
@@ -307,38 +257,16 @@ class Payload
 	 * EMV -> ID 62 . ID 05
 	 * Max length 25
 	 * 
-	 * When $tid is null, Parser::getRandom() will generate
-	 * an unique transaction id. You can still use Parse::getRandom()
-	 * as parameter of this method.
-	 * 
-	 * A static pix code created including a transaction id, 
-	 * can be consulted by usign an pix api.
-	 * 
-	 * @param string|null $tid Pix transaction id.
+	 * @param string $tid Pix transaction id.
 	 * @since 1.0.0
-	 * @since 1.2.0 Generate a random string when $tid is null.
+	 * @since 1.1.2 Formata o transaction id para formato válido.
 	 * @return self
 	 */
-	public function setTid ( ?string $tid )
+	public function setTid ( string $tid ) : self
 	{ 
-		if ( is_null( $tid ) )
-		{ $this->tid = Parser::getRandom(); }
-		else
-		{ $this->tid = $this->applyLength('Tid', $tid, 25); }
-
+		$this->tid = $this->applyLength( $tid, 25);
 		return $this; 
 	}
-
-	/**
-	 * Get the current transaction id. When setTid() was set to
-	 * null, Parser::getRandom() will generate an unique transaction id.
-	 * You may need to know this transaction id.
-	 * 
-	 * @since 1.2.0
-	 * @return string
-	 */
-	public function getTid () : string
-	{ return $this->tid; }
 
 	/**
 	 * Set the current pix transaction amount.
@@ -348,12 +276,11 @@ class Payload
 	 * 
 	 * @param string $amount Pix transaction amount.
 	 * @since 1.0.0
-	 * @since 1.2.0 Custom exception error.
 	 * @return self
-	 * @throws InvalidEmvFieldException When amount is greater than max length.
+	 * @throws Exception When amount is greater than max length.
 	 */
-	public function setAmount ( float $amount )
-	{ $this->amount = $this->applyLength('Amount', (string) number_format( $amount, 2, '.', '' ), 13, true); return $this; }
+	public function setAmount ( float $amount ) : self
+	{ $this->amount = $this->applyLength((string) number_format( $amount, 2, '.', '' ), 13, true); return $this; }
 
 	/**
 	 * Set the if the current pix can or can not be reusable.
@@ -362,19 +289,17 @@ class Payload
 	 * 
 	 * @param string $reusable If pix can be reusable.
 	 * @since 1.0.0
-	 * @since 1.2.0 not change $reusable variable anymore
 	 * @return self
 	 */
-	public function setAsReusable ( bool $reusable = true )
+	public function setAsReusable ( bool $reusable = true ) : self
 	{ $this->reusable = $reusable; return $this; }
 
 	/**
 	 * Get the current pix code.
 	 * 
 	 * @since 1.0.0
-	 * @since 1.2.0 Custom exception error.
 	 * @return string
-	 * @throws EmvIdIsRequiredException When some field is invalid.
+	 * @throws Exception When something went wrong.
 	 */
 	public function getPixCode () : string
 	{
@@ -401,16 +326,11 @@ class Payload
 	 * @param string $imageType Type of output image.
 	 * @since 1.0.0
 	 * @since 1.0.2 Added support for output image.
-	 * @since 1.2.2 Check if PHP supports QR Codes image.
 	 * @return string
 	 * @throws Exception When something went wrong.
-	 * @throws QRCodeNotSupported QR Code is not supported.
 	 */
 	public function getQRCode ( string $imageType = self::OUTPUT_SVG, int $ecc = self::ECC_M ) : string
 	{ 
-		if ( !self::supportQrCode() )
-		{ throw new QRCodeNotSupported(); }
-
 		$options = new QROptions([
 			'outputLevel' => $ecc,
 			'outputType' => $imageType
@@ -439,25 +359,21 @@ class Payload
 	 * EMV -> ID 01
 	 * 
 	 * @since 1.0.0
-	 * @since 1.2.4 Point of initiation method can be ignored.
 	 * @return string
 	 */
 	protected function getPointOfInitiationMethod ()
 	{
-		if ( $this->ignorePoIM )
-		{ return ''; }
-
 		return 
 			$this->reusable ?
-				// Reusable
-				$this->formatID(
-					self::ID_POINT_OF_INITIATION_METHOD,
-					'11'
-				) :
 				// Unique
 				$this->formatID(
 					self::ID_POINT_OF_INITIATION_METHOD,
 					'12'
+				) :
+				// Reusable
+				$this->formatID(
+					self::ID_POINT_OF_INITIATION_METHOD,
+					'11'
 				);
 	}
 
@@ -620,14 +536,14 @@ class Payload
 	protected function getCRC16 ( string $payload )
 	{
 		// Standard data
-		$payload .= self::ID_CRC16.'04'; 
+		$payload .= self::ID_CRC16.'04';
 
 		// Standard values by BACEN
 		$polynomial = 0x1021;
 		$response   = 0xFFFF;
 
 		// Checksum
-		if ( ( $length = strlen($payload) ) > 0 ) 
+		if ( ( $length = strlen($payload ) ) > 0 ) 
 		{
 			for ( $offset = 0; $offset < $length; $offset++ ) 
 			{
@@ -651,19 +567,18 @@ class Payload
 	 * Return formated data following the EMV patterns.
 	 * 
 	 * @since 1.0.0
-	 * @since 1.2.0 EMV field is required.
 	 * @param string $id Data ID.
 	 * @param string|null $value Data value.
 	 * @param bool $required When data value is required.
 	 * @return string Formated data.
-	 * @throws EmvIdIsRequiredException When value is empty and required.
+	 * @throws Exception When value is empty and required.
 	 */
 	protected function formatID ( string $id, $value, bool $required = true ) : string 
 	{
 		if ( empty( $value ) )
 		{ 
 			if ( $required ) 
-			{ throw new EmvIdIsRequiredException($id); }
+			{ throw new Exception(sprintf('O id `%s` não pode ser vazio.', $id)); }
 			else 
 			{ return ''; } 
 		}
@@ -711,33 +626,22 @@ class Payload
 	 * Cut data more than $maxLength.
 	 * 
 	 * @since 1.0.0
-	 * @since 1.2.0 Added $emvField and custom exception.
-	 * @param string $emvField
 	 * @param string $value
 	 * @param int $maxLength
 	 * @param bool $throws To throw exception when exceed.
 	 * @return string
-	 * @throws InvalidEmvFieldException When value exceed max length.
+	 * @throws Exception When value exceed max length.
 	 */
-	private function applyLength ( string $emvField, string $value, int $maxLength = 25, bool $throws = false )
+	private function applyLength ( string $value, int $maxLength = 25, bool $throws = false )
 	{
 		if ( strlen($value) > $maxLength )
 		{ 
 			if ( $throws )
-			{ throw new InvalidEmvFieldException($emvField, $value, sprintf('Excede o limite de %s caracteres.', $maxLength)); }
+			{ throw new Exception(sprintf('O valor `%s` excede o limite do campo.')); }
 
-			return substr($value, 0, $maxLength);
+			return substr($value, 0, 25);
 		}
 
 		return $value;
 	}
-
-	/**
-	 * Return if php supports QR Code.
-	 * 
-	 * @since 1.2.2
-	 * @return bool
-	 */
-	public static function supportQrCode () : bool
-	{ return ((float)phpversion('Core') >= 7.2) && (extension_loaded('gd') && function_exists('gd_info')); }
 }

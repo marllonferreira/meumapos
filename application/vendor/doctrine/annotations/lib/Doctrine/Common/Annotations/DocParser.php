@@ -5,7 +5,6 @@ namespace Doctrine\Common\Annotations;
 use Doctrine\Common\Annotations\Annotation\Attribute;
 use Doctrine\Common\Annotations\Annotation\Attributes;
 use Doctrine\Common\Annotations\Annotation\Enum;
-use Doctrine\Common\Annotations\Annotation\NamedArgumentConstructor;
 use Doctrine\Common\Annotations\Annotation\Target;
 use ReflectionClass;
 use ReflectionException;
@@ -15,11 +14,8 @@ use stdClass;
 
 use function array_keys;
 use function array_map;
-use function array_pop;
-use function array_values;
 use function class_exists;
 use function constant;
-use function count;
 use function defined;
 use function explode;
 use function gettype;
@@ -28,6 +24,7 @@ use function in_array;
 use function interface_exists;
 use function is_array;
 use function is_object;
+use function is_subclass_of;
 use function json_encode;
 use function ltrim;
 use function preg_match;
@@ -148,35 +145,33 @@ final class DocParser
      */
     private static $annotationMetadata = [
         Annotation\Target::class => [
-            'is_annotation'                  => true,
-            'has_constructor'                => true,
-            'has_named_argument_constructor' => false,
-            'properties'                     => [],
-            'targets_literal'                => 'ANNOTATION_CLASS',
-            'targets'                        => Target::TARGET_CLASS,
-            'default_property'               => 'value',
-            'attribute_types'                => [
+            'is_annotation'    => true,
+            'has_constructor'  => true,
+            'properties'       => [],
+            'targets_literal'  => 'ANNOTATION_CLASS',
+            'targets'          => Target::TARGET_CLASS,
+            'default_property' => 'value',
+            'attribute_types'  => [
                 'value'  => [
-                    'required'   => false,
-                    'type'       => 'array',
+                    'required'  => false,
+                    'type'      => 'array',
                     'array_type' => 'string',
-                    'value'      => 'array<string>',
+                    'value'     => 'array<string>',
                 ],
             ],
         ],
         Annotation\Attribute::class => [
-            'is_annotation'                  => true,
-            'has_constructor'                => false,
-            'has_named_argument_constructor' => false,
-            'targets_literal'                => 'ANNOTATION_ANNOTATION',
-            'targets'                        => Target::TARGET_ANNOTATION,
-            'default_property'               => 'name',
-            'properties'                     => [
+            'is_annotation'    => true,
+            'has_constructor'  => false,
+            'targets_literal'  => 'ANNOTATION_ANNOTATION',
+            'targets'          => Target::TARGET_ANNOTATION,
+            'default_property' => 'name',
+            'properties'       => [
                 'name'      => 'name',
                 'type'      => 'type',
                 'required'  => 'required',
             ],
-            'attribute_types'                => [
+            'attribute_types'  => [
                 'value'  => [
                     'required'  => true,
                     'type'      => 'string',
@@ -195,14 +190,13 @@ final class DocParser
             ],
         ],
         Annotation\Attributes::class => [
-            'is_annotation'                  => true,
-            'has_constructor'                => false,
-            'has_named_argument_constructor' => false,
-            'targets_literal'                => 'ANNOTATION_CLASS',
-            'targets'                        => Target::TARGET_CLASS,
-            'default_property'               => 'value',
-            'properties'                     => ['value' => 'value'],
-            'attribute_types'                => [
+            'is_annotation'    => true,
+            'has_constructor'  => false,
+            'targets_literal'  => 'ANNOTATION_CLASS',
+            'targets'          => Target::TARGET_CLASS,
+            'default_property' => 'value',
+            'properties'       => ['value' => 'value'],
+            'attribute_types'  => [
                 'value' => [
                     'type'      => 'array',
                     'required'  => true,
@@ -212,14 +206,13 @@ final class DocParser
             ],
         ],
         Annotation\Enum::class => [
-            'is_annotation'                  => true,
-            'has_constructor'                => true,
-            'has_named_argument_constructor' => false,
-            'targets_literal'                => 'ANNOTATION_PROPERTY',
-            'targets'                        => Target::TARGET_PROPERTY,
-            'default_property'               => 'value',
-            'properties'                     => ['value' => 'value'],
-            'attribute_types'                => [
+            'is_annotation'    => true,
+            'has_constructor'  => true,
+            'targets_literal'  => 'ANNOTATION_PROPERTY',
+            'targets'          => Target::TARGET_PROPERTY,
+            'default_property' => 'value',
+            'properties'       => ['value' => 'value'],
+            'attribute_types'  => [
                 'value' => [
                     'type'      => 'array',
                     'required'  => true,
@@ -229,16 +222,6 @@ final class DocParser
                     'required'  => false,
                 ],
             ],
-        ],
-        Annotation\NamedArgumentConstructor::class => [
-            'is_annotation'                  => true,
-            'has_constructor'                => false,
-            'has_named_argument_constructor' => false,
-            'targets_literal'                => 'ANNOTATION_CLASS',
-            'targets'                        => Target::TARGET_CLASS,
-            'default_property'               => null,
-            'properties'                     => [],
-            'attribute_types'                => [],
         ],
     ];
 
@@ -501,11 +484,10 @@ final class DocParser
             self::$metadataParser->setIgnoreNotImportedAnnotations(true);
             self::$metadataParser->setIgnoredAnnotationNames($this->ignoredAnnotationNames);
             self::$metadataParser->setImports([
-                'enum'                     => Enum::class,
-                'target'                   => Target::class,
-                'attribute'                => Attribute::class,
-                'attributes'               => Attributes::class,
-                'namedargumentconstructor' => NamedArgumentConstructor::class,
+                'enum'          => Annotation\Enum::class,
+                'target'        => Annotation\Target::class,
+                'attribute'     => Annotation\Attribute::class,
+                'attributes'    => Annotation\Attributes::class,
             ]);
 
             // Make sure that annotations from metadata are loaded
@@ -513,7 +495,6 @@ final class DocParser
             class_exists(Target::class);
             class_exists(Attribute::class);
             class_exists(Attributes::class);
-            class_exists(NamedArgumentConstructor::class);
         }
 
         $class      = new ReflectionClass($name);
@@ -533,8 +514,14 @@ final class DocParser
             'is_annotation'    => strpos($docComment, '@Annotation') !== false,
         ];
 
-        $metadata['has_named_argument_constructor'] = $metadata['has_constructor']
-            && $class->implementsInterface(NamedArgumentConstructorAnnotation::class);
+        if (PHP_VERSION_ID < 80000 && $class->implementsInterface(NamedArgumentConstructorAnnotation::class)) {
+            foreach ($constructor->getParameters() as $parameter) {
+                $metadata['constructor_args'][$parameter->getName()] = [
+                    'position' => $parameter->getPosition(),
+                    'default' => $parameter->isOptional() ? $parameter->getDefaultValue() : null,
+                ];
+            }
+        }
 
         // verify that the class is really meant to be an annotation
         if ($metadata['is_annotation']) {
@@ -546,14 +533,6 @@ final class DocParser
                     $metadata['targets_literal'] = $annotation->literal;
 
                     continue;
-                }
-
-                if ($annotation instanceof NamedArgumentConstructor) {
-                    $metadata['has_named_argument_constructor'] = $metadata['has_constructor'];
-                    if ($metadata['has_named_argument_constructor']) {
-                        // choose the first argument as the default property
-                        $metadata['default_property'] = $constructor->getParameters()[0]->getName();
-                    }
                 }
 
                 if (! ($annotation instanceof Attributes)) {
@@ -602,7 +581,7 @@ final class DocParser
                         }
 
                         $metadata['enum'][$property->name]['value']   = $annotation->value;
-                        $metadata['enum'][$property->name]['literal'] = (! empty($annotation->literal))
+                        $metadata['enum'][$property->name]['literal'] = ( ! empty($annotation->literal))
                             ? $annotation->literal
                             : $annotation->value;
                     }
@@ -610,13 +589,6 @@ final class DocParser
 
                 // choose the first property as default property
                 $metadata['default_property'] = reset($metadata['properties']);
-            } elseif ($metadata['has_named_argument_constructor']) {
-                foreach ($constructor->getParameters() as $parameter) {
-                    $metadata['constructor_args'][$parameter->getName()] = [
-                        'position' => $parameter->getPosition(),
-                        'default' => $parameter->isOptional() ? $parameter->getDefaultValue() : null,
-                    ];
-                }
             }
         }
 
@@ -866,8 +838,7 @@ EXCEPTION
             );
         }
 
-        $arguments = $this->MethodCall();
-        $values    = $this->resolvePositionalValues($arguments, $name);
+        $values = $this->MethodCall();
 
         if (isset(self::$annotationMetadata[$name]['enum'])) {
             // checks all declared attributes
@@ -939,7 +910,7 @@ EXCEPTION
             }
         }
 
-        if (self::$annotationMetadata[$name]['has_named_argument_constructor']) {
+        if (is_subclass_of($name, NamedArgumentConstructorAnnotation::class)) {
             if (PHP_VERSION_ID >= 80000) {
                 return new $name(...$values);
             }
@@ -1062,20 +1033,30 @@ EXCEPTION
             $token = $this->lexer->lookahead;
             $value = $this->Value();
 
+            if (! is_object($value) && ! is_array($value)) {
+                throw $this->syntaxError('Value', $token);
+            }
+
             $values[] = $value;
         }
 
-        $namedArguments      = [];
-        $positionalArguments = [];
         foreach ($values as $k => $value) {
             if (is_object($value) && $value instanceof stdClass) {
-                $namedArguments[$value->name] = $value->value;
+                $values[$value->name] = $value->value;
+            } elseif (! isset($values['value'])) {
+                $values['value'] = $value;
             } else {
-                $positionalArguments[$k] = $value;
+                if (! is_array($values['value'])) {
+                    $values['value'] = [$values['value']];
+                }
+
+                $values['value'][] = $value;
             }
+
+            unset($values[$k]);
         }
 
-        return ['named_arguments' => $namedArguments, 'positional_arguments' => $positionalArguments];
+        return $values;
     }
 
     /**
@@ -1101,9 +1082,9 @@ EXCEPTION
                 case ! empty($this->namespaces):
                     foreach ($this->namespaces as $ns) {
                         if (class_exists($ns . '\\' . $className) || interface_exists($ns . '\\' . $className)) {
-                            $className = $ns . '\\' . $className;
-                            $found     = true;
-                            break;
+                             $className = $ns . '\\' . $className;
+                             $found     = true;
+                             break;
                         }
                     }
 
@@ -1130,7 +1111,7 @@ EXCEPTION
             }
 
             if ($found) {
-                $identifier = $className . '::' . $const;
+                 $identifier = $className . '::' . $const;
             }
         }
 
@@ -1402,58 +1383,5 @@ EXCEPTION
         }
 
         return false;
-    }
-
-    /**
-     * Resolve positional arguments (without name) to named ones
-     *
-     * @param array<string,mixed> $arguments
-     *
-     * @return array<string,mixed>
-     */
-    private function resolvePositionalValues(array $arguments, string $name): array
-    {
-        $positionalArguments = $arguments['positional_arguments'] ?? [];
-        $values              = $arguments['named_arguments'] ?? [];
-
-        if (
-            self::$annotationMetadata[$name]['has_named_argument_constructor']
-            && self::$annotationMetadata[$name]['default_property'] !== null
-        ) {
-            // We must ensure that we don't have positional arguments after named ones
-            $positions    = array_keys($positionalArguments);
-            $lastPosition = null;
-            foreach ($positions as $position) {
-                if (
-                    ($lastPosition === null && $position !== 0) ||
-                    ($lastPosition !== null && $position !== $lastPosition + 1)
-                ) {
-                    throw $this->syntaxError('Positional arguments after named arguments is not allowed');
-                }
-
-                $lastPosition = $position;
-            }
-
-            foreach (self::$annotationMetadata[$name]['constructor_args'] as $property => $parameter) {
-                $position = $parameter['position'];
-                if (isset($values[$property]) || ! isset($positionalArguments[$position])) {
-                    continue;
-                }
-
-                $values[$property] = $positionalArguments[$position];
-            }
-        } else {
-            if (count($positionalArguments) > 0 && ! isset($values['value'])) {
-                if (count($positionalArguments) === 1) {
-                    $value = array_pop($positionalArguments);
-                } else {
-                    $value = array_values($positionalArguments);
-                }
-
-                $values['value'] = $value;
-            }
-        }
-
-        return $values;
     }
 }

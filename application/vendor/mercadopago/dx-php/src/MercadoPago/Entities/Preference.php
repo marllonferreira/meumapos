@@ -1,4 +1,7 @@
 <?php
+/**
+ * Preference class file
+ */
 namespace MercadoPago;
 
 use MercadoPago\Annotation\RestMethod;
@@ -6,10 +9,7 @@ use MercadoPago\Annotation\RequestParam;
 use MercadoPago\Annotation\Attribute;
 
 /**
- * This class will allow you to charge your customers through our web form from any device in a simple, fast and secure way.
- *  
- * @link https://www.mercadopago.com/developers/en/guides/online-payments/checkout-pro/introduction Click here for more infos
- * 
+ * Preference class
  * @RestMethod(resource="/checkout/preferences", method="create")
  * @RestMethod(resource="/checkout/preferences/:id", method="read")
  * @RestMethod(resource="/checkout/preferences/:id", method="update")
@@ -99,14 +99,6 @@ class Preference extends Entity
      * @var \DateTime
      */
     protected $expiration_date_to;
-
-    /**
-     * date_of_expiration
-     * @Attribute(type = "date")
-     * @var \DateTime
-     */
-    protected $date_of_expiration;
-
 
     /**
      * collector_id

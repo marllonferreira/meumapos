@@ -10,8 +10,6 @@
             <thead>
                 <tr style="background-color: #2D335B">
                     <th>#</th>
-                    <th>Gateway</th>
-                    <th>Tipo</th>
                     <th>Data de Vencimento</th>
                     <th>Referência</th>
                     <th>Status</th>
@@ -36,8 +34,6 @@
 
                         echo '<tr>';
                         echo '<td>' . $r->idCobranca . '</td>';
-                        echo '<td>' . $r->payment_gateway . '</td>';
-                        echo '<td>' . $r->payment_method . '</td>';
                         echo '<td>' . $dataVenda . '</td>';
 
                         if ($r->os_id != '') {

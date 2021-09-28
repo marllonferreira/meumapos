@@ -5,11 +5,15 @@ namespace Mpdf;
 use Mpdf\Color\ColorConverter;
 use Mpdf\Color\ColorModeConverter;
 use Mpdf\Color\ColorSpaceRestrictor;
+
 use Mpdf\Fonts\FontCache;
 use Mpdf\Fonts\FontFileFinder;
+
 use Mpdf\Image\ImageProcessor;
+
 use Mpdf\Pdf\Protection;
 use Mpdf\Pdf\Protection\UniqidGenerator;
+
 use Mpdf\Writer\BaseWriter;
 use Mpdf\Writer\BackgroundWriter;
 use Mpdf\Writer\ColorWriter;
@@ -21,6 +25,7 @@ use Mpdf\Writer\JavaScriptWriter;
 use Mpdf\Writer\MetadataWriter;
 use Mpdf\Writer\OptionalContentWriter;
 use Mpdf\Writer\PageWriter;
+
 use Mpdf\Writer\ResourceWriter;
 use Psr\Log\LoggerInterface;
 

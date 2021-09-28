@@ -4,59 +4,6 @@ Todas as alterações serão documentadas neste arquivo
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.35.0] - 2021-09-04
-
-### Added
-- Integração com gateway de pagamento asaas. [@Pr3d4dor](https://github.com/Pr3d4dor)
-- Link para acessar cadastro do cliente de dentro da OS. [@tutibueno](https://github.com/tutibueno)
-
-## [4.34.0] - 2021-07-11
-
-### Added
-- Envio de email para o cliente e técnicos após cadastro da OS pelo cliente. [@tutibueno](https://github.com/tutibueno)
-- Envia de email de boas vindas quando o cliente se cadastra na área do cliente. [@tutibueno](https://github.com/tutibueno)
-- Notifica o time técnico que um novo cliente se cadastrou pela área do cliente. [@tutibueno](https://github.com/tutibueno)
-
-### Fixed
-- Corrigido versão do PHP em dockerfile. [@mikxingu](https://github.com/mikxingu)
-
-## [4.33.1] - 2021-05-24
-
-### Fixed
-- Corrigido valor incorreto em banco.sql. [@willph](https://github.com/willph)
-
-## [4.33.0] - 2021-05-23
-
-### Added
-- Adicionado status "Aprovado" em OS. [@fwsund](https://github.com/fwsund)
-- Sugestão de valor de desconto ao faturar OS/Vendar de acordo com percentual. [@hoshikawakun](https://github.com/hoshikawakun)
-- Sugestão de valor do produto ao editar/adicionar produto de acordo com margem. [@hoshikawakun](https://github.com/hoshikawakun)
-
-### Changed
-- Melhorias gerais em relatórios. [@hoshikawakun](https://github.com/hoshikawakun)
-- Melhora em cores de gráficos do painel. [@mikxingu](https://github.com/mikxingu)
-
-## [4.32.2] - 2021-04-16
-
-### Changed
-- Alteradas as cores dos gráficos do painel para melhor entendimento e leitura dos gráficos e adicionado comentário nas linhas para que os usuários possam alterar as cores mais facilmente. [@mikxingu](https://github.com/mikxingu)
-
-## [4.32.1] - 2021-03-27
-
-### Fixed
-- Adequação para usar versão de PHP 7.4 fixa em docker e correção no comando de instalação do composer em docker. [@Pr3d4dor](https://github.com/Pr3d4dor)
-- Adequação para usar submit handler para evitar que lançamentos financeiros sejam duplicados. [@bietez](https://github.com/bietez)
-
-## [4.32.0] - 2021-03-23
-
-### Added
-- Criada uma forma configurável de como o padrão básico de exibição da listagem de OS.[@bulfaitelo](https://github.com/bulfaitelo)
-
-### Fixed
-- Corrigido problema ao gerar qr code de PIX. [@Pr3d4dor](https://github.com/Pr3d4dor)
-- Corrigido erro ao selecionar filtro faturado e nome do cliente, não vinha os dados existentes. [@willph](https://github.com/willph)
-- Corrigido autocomplete de CEP do viacep. [@douglascoe](https://github.com/douglascoe)
-
 ## [4.31.1] - 2021-02-13
 
 ### Fixed
@@ -270,7 +217,6 @@ e [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [4.17.0] - 2020-10-04
 
 ## Added
-
 - Modificado filtros de lançamentos para permitir período arbitrário de data e adicionado filtro de status. [@Pr3d4dor](https://github.com/Pr3d4dor)
 
 ## [4.16.0] - 2020-10-04
