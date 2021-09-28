@@ -16,7 +16,7 @@
             <input type="text" name="pesquisa" id="pesquisa" placeholder="Nome do cliente a pesquisar" class="span12" value="">
         </div>
         <div class="span2">
-            <select name="status[]" id="status" class="span12">
+            <select name="status[]" id="status" class="span12" multiple>
                 <option value="">Selecione status</option>
                 <option value="Aberto">Aberto</option>
                 <option value="Faturado">Faturado</option>
@@ -26,6 +26,7 @@
                 <option value="Finalizado">Finalizado</option>
                 <option value="Cancelado">Cancelado</option>
                 <option value="Aguardando Peças">Aguardando Peças</option>
+                <option value="Aprovado">Aprovado</option>
             </select>
 
         </div>
@@ -81,9 +82,10 @@
                         } else {
                             $dataFinal = "";
                         }
-
-                        if ($this->input->get('pesquisa') !== '' && $r->status === "Faturado") {
-                            continue;
+                        if ($this->input->get('pesquisa') === null && is_array(json_decode($configuration['os_status_list']))) {
+                            if (in_array($r->status, json_decode($configuration['os_status_list'])) != true) {
+                                continue;
+                            }
                         }
 
                         switch ($r->status) {
@@ -111,6 +113,9 @@
                             case 'Aguardando Peças':
                                 $cor = '#FF7F00';
                                 break;
+                            case 'Aprovado':
+                                $cor = '#808080';
+                                break;
                             default:
                                 $cor = '#E0E4CC';
                                 break;
@@ -123,7 +128,7 @@
 
                         echo '<tr>';
                         echo '<td>' . $r->idOs . '</td>';
-                        echo '<td><a href="' . base_url() . 'index.php/clientes/visualizar/' . $r->clientes_id . '">' . $r->nomeCliente . '</a></td>';
+                        echo '<td><a href="' . base_url() . 'index.php/clientes/visualizar/' . $r->idClientes . '" style="margin-right: 1%">' .$r->nomeCliente. '</a></td>';
                         echo '<td>' . $r->nome . '</td>';
                         echo '<td>' . $dataInicial . '</td>';
                         echo '<td>' . $dataFinal . '</td>';
