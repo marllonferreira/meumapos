@@ -68,11 +68,14 @@ $totalProdutos = 0; ?>
                                             <li>
                                                 <span>
                                                     <h5><b>CLIENTE</b></h5>
-                                                    <span><?php echo $result->nomeCliente ?></span><br />
+                                                    <span><?php echo $result->nomeCliente ?></span>
+                                                    <span>CPF/CNPJ: <?php echo $result->documento_cliente ?></span><br />
                                                     <span><?php echo $result->rua ?>, <?php echo $result->numero ?>, <?php echo $result->bairro ?></span>,
                                                     <span><?php echo $result->cidade ?> - <?php echo $result->estado ?></span><br>
                                                     <span>E-mail: <?php echo $result->email ?></span><br>
                                                     <span>Celular: <?php echo $result->celular_cliente ?></span>
+                                                    
+                                                
                                             </li>
                                         </ul>
                                     </td>
@@ -237,13 +240,13 @@ $totalProdutos = 0; ?>
                         <table class="table table-bordered table-condensed">
                             <tbody>
                                 <tr>
-                                    <td>Data
+                                    <td style="width: 15%; text-align: center">Data
                                         <hr>
                                     </td>
-                                    <td>Assinatura do Cliente
+                                    <td style="width: 45%; text-align: center">Assinatura do Cliente
                                         <hr>
                                     </td>
-                                    <td>Assinatura do Técnico Responsável
+                                    <td style="width: 40%; text-align: center">Assinatura do Técnico Responsável
                                         <hr>
                                     </td>
                                 </tr>
