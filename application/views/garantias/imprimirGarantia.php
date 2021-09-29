@@ -61,7 +61,7 @@
                                         <ul>
                                             <li>
                                                 <span>
-                                                    <h5 class="text-center">Termo de Garantia</h5>
+                                                    <h5 class="text-center">Termo</h5>
                                                 </span>
                                             </li>
                                         </ul>
@@ -86,13 +86,13 @@
                         <table class="table table-bordered table-condensed">
                             <tbody>
                                 <tr>
-                                    <td>Data
+                                    <td style="width: 15%; text-align: center">Data
                                         <hr>
                                     </td>
-                                    <td>Assinatura do Cliente
+                                    <td style="width: 45%; text-align: center">Assinatura do Cliente
                                         <hr>
                                     </td>
-                                    <td>Assinatura do Técnico Responsável
+                                    <td style="width: 40%; text-align: center"> Assinatura do Técnico Responsável
                                         <hr>
                                     </td>
                                 </tr>
