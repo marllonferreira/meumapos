@@ -90,7 +90,7 @@
                                     </div>
                                     <div class="span2">
                                         <label for="">Quantidade</label>
-                                        <input type="text" placeholder="Quantidade" id="quantidade" name="quantidade" class="span12" min="1" max="999" step="1" autocomplete= "off" value="1" />
+                                        <input type="number" placeholder="Quantidade" id="quantidade" name="quantidade" class="span12" min="1" max="999" step="1" autocomplete= "off" value="1" />
                                     </div>
                                     <div class="span2">
                                         <label for="">&nbsp</label>
