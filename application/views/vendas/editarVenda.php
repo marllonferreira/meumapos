@@ -90,7 +90,7 @@
                                     </div>
                                     <div class="span2">
                                         <label for="">Quantidade</label>
-                                        <input type="text" placeholder="Quantidade" id="quantidade" name="quantidade" class="span12" />
+                                        <input type="text" placeholder="Quantidade" id="quantidade" name="quantidade" class="span12" min="1" max="999" step="1" autocomplete= "off" value="1" />
                                     </div>
                                     <div class="span2">
                                         <label for="">&nbsp</label>
@@ -212,7 +212,7 @@
     </form>
 </div>
 <script type="text/javascript" src="<?php echo base_url() ?>assets/js/jquery.validate.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/maskmoney.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/maskmoney2.js"></script>
 <script type="text/javascript">
     function calcular() {
         var desconto = Number(document.getElementById("valor").value);
