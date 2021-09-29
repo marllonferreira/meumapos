@@ -74,6 +74,18 @@
           <li class=""><a title="Sair do Sistema" href="<?= site_url('login/sair'); ?>"><i class="fas fa-sign-out-alt"></i> <span class="text">Sair do Sistema</span></a></li>
         </ul>
       </li>
+	  <!--codigo de calendario-->
+		<li style="margin-left: 100px;margin-top: 10px;"><span class="text" style="font-size:13px;"><a><i class="far fa-calendar-alt navbar navbar-inverse" ></i>
+
+          <?php
+          setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
+          date_default_timezone_set('America/Sao_Paulo');
+          $uppercaseMonth = ucfirst(gmstrftime('%B'));
+          echo utf8_encode(ucfirst(strftime( '%A, %d de ' .$uppercaseMonth. ' de %Y', strtotime('today'))));
+          ?> 
+          <i class="far fa-clock"></i></i> <span id="timer"></a></span></span>
+		  </li>
+	  <!--fim-->
     </ul>
   </div>
   <!--start-top-serch-->
