@@ -1,0 +1,1 @@
+<!DOCTYPE html><html><head>    <meta charset="utf-8"/>    <title>INTELSYSTECH AREA DO CLIENTE</title>     <meta http-equiv="refresh" content="0; URL='../index.php/mine/'"/></head><body>........</body></html>
