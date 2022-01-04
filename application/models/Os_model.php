@@ -183,7 +183,7 @@ class Os_model extends CI_Model
     public function autoCompleteProduto($q)
     {
         $this->db->select('*');
-        $this->db->limit(5);
+        $this->db->limit(10);
         $this->db->like('codDeBarra', $q);
         $this->db->or_like('descricao', $q);
         $query = $this->db->get('produtos');
@@ -259,7 +259,7 @@ class Os_model extends CI_Model
     public function autoCompleteServico($q)
     {
         $this->db->select('*');
-        $this->db->limit(5);
+        $this->db->limit(10);
         $this->db->like('nome', $q);
         $query = $this->db->get('servicos');
         if ($query->num_rows() > 0) {
