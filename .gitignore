@@ -9,7 +9,6 @@
 
 
 
-
 .env.local
 .env.development.local
 .env.test.local
@@ -19,9 +18,9 @@
 desktop.ini
 
 
-
 .idea/
 .php_cs.cache
+.php-cs-fixer.cache
 application/logs/*
 ci_sessions/
 

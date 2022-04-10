@@ -2,7 +2,6 @@
 $totalProdutos = 0; ?>
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <title>Map_OS_<?php echo $result->idOs ?>_<?php echo $result->nomeCliente ?></title>
     <meta charset="UTF-8" />
@@ -18,45 +17,41 @@ $totalProdutos = 0; ?>
         }
     </style>
 </head>
-
 <body>
-
     <div class="container-fluid">
         <div class="row-fluid">
             <div class="span12">
-
                 <div class="invoice-content">
                     <div class="invoice-head" style="margin-bottom: 0">
-
                         <table class="table table-condensed">
                             <tbody>
                                 <?php if ($emitente == null) { ?>
 
                                     <tr>
                                         <td colspan="3" class="alert">Você precisa configurar os dados do emitente. >>><a href="<?php echo base_url(); ?>index.php/mapos/emitente">Configurar</a>
-                                            <<<</td> </tr> <?php } else { ?> <td style="width: 25%"><img src=" <?php echo $emitente[0]->url_logo; ?> ">
-                                        </td>
-                                        <td> <span style="font-size: 17px;">
-                                                <?php echo $emitente[0]->nome; ?></span> </br>
-                                            <span style="font-size: 12px; ">
+                                            <<<< /td>
+                                    </tr> <?php } else { ?> <td style="width: 25%"><img src=" <?php echo $emitente[0]->url_logo; ?> ">
+                                    </td>
+                                    <td> <span style="font-size: 17px;">
+                                            <?php echo $emitente[0]->nome; ?></span> </br>
+                                        <span style="font-size: 12px; ">
+                                            <span class="icon">
+                                                <i class="fas fa-fingerprint" style="margin:5px 1px"></i>
+                                                <?php echo $emitente[0]->cnpj; ?> </br>
                                                 <span class="icon">
-                                                    <i class="fas fa-fingerprint" style="margin:5px 1px"></i>
-                                                    <?php echo $emitente[0]->cnpj; ?> </br>
+                                                    <i class="fas fa-map-marker-alt" style="margin:4px 3px"></i>
+                                                    <?php echo $emitente[0]->rua . ', nº:' . $emitente[0]->numero . ', ' . $emitente[0]->bairro . ' - ' . $emitente[0]->cidade . ' - ' . $emitente[0]->uf; ?>
+                                                </span> </br> <span>
                                                     <span class="icon">
-                                                        <i class="fas fa-map-marker-alt" style="margin:4px 3px"></i>
-                                                        <?php echo $emitente[0]->rua . ', nº:' . $emitente[0]->numero . ', ' . $emitente[0]->bairro . ' - ' . $emitente[0]->cidade . ' - ' . $emitente[0]->uf; ?>
-                                                    </span> </br> <span>
+                                                        <i class="fas fa-comments" style="margin:5px 1px"></i>
+                                                        E-mail:<?php echo $emitente[0]->email . ' - Fone: ' . $emitente[0]->telefone; ?> </br>
                                                         <span class="icon">
-                                                            <i class="fas fa-comments" style="margin:5px 1px"></i>
-                                                            E-mail:<?php echo $emitente[0]->email . ' - Fone: ' . $emitente[0]->telefone; ?> </br>
-                                                            <span class="icon">
-                                                                <i class="fas fa-user-check"></i>
-                                                                Responsável: <?php echo $result->nome ?>
-                                        <td style="width: 18%; text-align: center"><b>N° OS:</b> <span><?php echo $result->idOs ?></span></br> </br> <span>Emissão: <?php echo date('d/m/Y') ?></span></td>
-                                        </span>
-                                        </td>
+                                                            <i class="fas fa-user-check"></i>
+                                                            Responsável: <?php echo $result->nome ?>
+                                    <td style="width: 18%; text-align: center"><b>N° OS:</b> <span><?php echo $result->idOs ?></span></br> </br> <span>Emissão: <?php echo date('d/m/Y') ?></span></td>
+                                    </span>
+                                    </td>
                                     </tr>
-
                                 <?php } ?>
                             </tbody>
                         </table>
@@ -68,23 +63,15 @@ $totalProdutos = 0; ?>
                                             <li>
                                                 <span>
                                                     <h5><b>CLIENTE</b></h5>
-                                                    <span><?php echo $result->nomeCliente ?></span>
-                                                    <span>CPF/CNPJ: <?php echo $result->documento_cliente ?></span><br />
+                                                    <span><?php echo $result->nomeCliente ?></span><br />
                                                     <span><?php echo $result->rua ?>, <?php echo $result->numero ?>, <?php echo $result->bairro ?></span>,
                                                     <span><?php echo $result->cidade ?> - <?php echo $result->estado ?></span><br>
-                                                    <!-- começo -->
-													<?php if ($result->email != null) { ?>
                                                     <span>E-mail: <?php echo $result->email ?></span><br>
-                                                    <?php } ?>
-													<!-- fim -->
                                                     <span>Celular: <?php echo $result->celular_cliente ?></span>
-                                                    
-                                                
                                             </li>
                                         </ul>
                                     </td>
-
-                                    <?php if ($qrCode): ?>
+                                    <?php if ($qrCode) : ?>
                                         <td style="width: 15%; padding-left: 0">
                                             <img style="margin:12px auto;" src="<?= $qrCode ?>" alt="QR Code de Pagamento" />
                                         </td>
@@ -92,37 +79,32 @@ $totalProdutos = 0; ?>
                                 </tr>
                             </tbody>
                         </table>
-
                     </div>
-
                     <div style="margin-top: 0; padding-top: 0">
-
-
                         <table class="table table-condensed">
                             <tbody>
-
                                 <?php if ($result->dataInicial != null) { ?>
                                     <tr>
                                         <td>
                                             <b>STATUS OS: </b>
                                             <?php echo $result->status ?>
                                         </td>
-
                                         <td>
                                             <b>DATA INICIAL: </b>
                                             <?php echo date('d/m/Y', strtotime($result->dataInicial)); ?>
                                         </td>
-
                                         <td>
                                             <b>DATA FINAL: </b>
                                             <?php echo $result->dataFinal ? date('d/m/Y', strtotime($result->dataFinal)) : ''; ?>
                                         </td>
-
-                                        <td>
-                                            <b>GARANTIA: </b>
-                                            <?php echo $result->garantia . ' dias'; ?>
-                                        </td>
-
+                                        <?php if ($result->garantia) {
+    ?>
+                                            <td>
+                                                <b>GARANTIA: </b>
+                                                <?php echo $result->garantia . ' dias'; ?>
+                                            </td>
+                                        <?php
+} ?>
                                         <td>
                                             <b>
                                                 <?php if ($result->status == 'Finalizado') { ?>
@@ -131,7 +113,6 @@ $totalProdutos = 0; ?>
                                             <?php echo dateInterval($result->dataFinal, $result->garantia); ?><?php } ?>
                                     </tr>
                                 <?php } ?>
-
                                 <?php if ($result->descricaoProduto != null) { ?>
                                     <tr>
                                         <td colspan="5">
@@ -140,7 +121,6 @@ $totalProdutos = 0; ?>
                                         </td>
                                     </tr>
                                 <?php } ?>
-
                                 <?php if ($result->defeito != null) { ?>
                                     <tr>
                                         <td colspan="5">
@@ -149,7 +129,6 @@ $totalProdutos = 0; ?>
                                         </td>
                                     </tr>
                                 <?php } ?>
-
                                 <?php if ($result->observacoes != null) { ?>
                                     <tr>
                                         <td colspan="5">
@@ -158,7 +137,6 @@ $totalProdutos = 0; ?>
                                         </td>
                                     </tr>
                                 <?php } ?>
-
                                 <?php if ($result->laudoTecnico != null) { ?>
                                     <tr>
                                         <td colspan="5">
@@ -169,9 +147,7 @@ $totalProdutos = 0; ?>
                                 <?php } ?>
                             </tbody>
                         </table>
-
                         <?php if ($produtos != null) { ?>
-
                             <table class="table table-bordered table-condensed" id="tblProdutos">
                                 <thead>
                                     <tr>
@@ -183,7 +159,6 @@ $totalProdutos = 0; ?>
                                 </thead>
                                 <tbody>
                                     <?php
-
                                     foreach ($produtos as $p) {
                                         $totalProdutos = $totalProdutos + $p->subTotal;
                                         echo '<tr>';
@@ -194,16 +169,13 @@ $totalProdutos = 0; ?>
                                         echo '</tr>';
                                     } ?>
                                     <tr>
-
                                         <td colspan="3" style="text-align: right"><strong>Total:</strong></td>
                                         <td><strong>R$ <?php echo number_format($totalProdutos, 2, ',', '.'); ?></strong></td>
                                     </tr>
                                 </tbody>
                             </table>
                         <?php } ?>
-
                         <?php if ($servicos != null) { ?>
-
                             <table class="table table-bordered table-condensed">
                                 <thead>
                                     <tr>
@@ -236,21 +208,21 @@ $totalProdutos = 0; ?>
                         <?php } ?>
                         <?php
                         if ($totalProdutos != 0 || $totalServico != 0) {
-                            echo "<h4 style='text-align: right'> Valor Total da OS: R$" . number_format($totalProdutos + $totalServico, 2, ',', '.') . "</h4>";
+                            echo "<h4 style='text-align: right'> Valor Total da OS: R$ " . number_format($totalProdutos + $totalServico, 2, ',', '.') . "</h4>";
+                            echo $result->valor_desconto != 0 ? "<h4 style='text-align: right'> Desconto: R$ " . number_format($result->valor_desconto != 0 ? $result->valor_desconto - ($totalProdutos + $totalServico) : 0.00, 2, ',', '.') . "</h4>" : "";
+                            echo $result->valor_desconto != 0 ? "<h4 style='text-align: right'> Total com Desconto: R$ " . number_format($result->valor_desconto, 2, ',', '.') . "</h4>" : "";
                         }
-
                         ?>
-
                         <table class="table table-bordered table-condensed">
                             <tbody>
                                 <tr>
-                                    <td style="width: 15%; text-align: center">Data
+                                    <td>Data
                                         <hr>
                                     </td>
-                                    <td style="width: 45%; text-align: center">Assinatura do Cliente
+                                    <td>Assinatura do Cliente
                                         <hr>
                                     </td>
-                                    <td style="width: 40%; text-align: center">Assinatura do Técnico Responsável
+                                    <td>Assinatura do Técnico Responsável
                                         <hr>
                                     </td>
                                 </tr>
@@ -261,16 +233,10 @@ $totalProdutos = 0; ?>
             </div>
         </div>
     </div>
-
-
-
     <script src="<?php echo base_url(); ?>assets/js/bootstrap.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/matrix.js"></script>
-
     <script>
         window.print();
     </script>
-
 </body>
-
 </html>

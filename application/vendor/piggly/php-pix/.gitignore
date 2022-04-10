@@ -9,6 +9,7 @@
 *.vi
 *~
 *.sass-cache
+*.phpunit*
 
 # OS or Editor folders
 .DS_Store
@@ -22,6 +23,7 @@ nbproject
 *.sublime-project
 *.sublime-workspace
 *.code-workspace
+*.cache
 
 # Dreamweaver added files
 _notes

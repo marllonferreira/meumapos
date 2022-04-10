@@ -4,18 +4,17 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit50a5a940554dd22402aaa2d2197711c8
+class ComposerStaticInit248570faf8273b26bc60a7daaac4ff08
 {
     public static $files = array (
-        '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
-        'e69f7f6ee287b969198c3c9d6777bd38' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/bootstrap.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
-        'f598d06aa772fa33d905e87be6398fb1' => __DIR__ . '/..' . '/symfony/polyfill-intl-idn/bootstrap.php',
-        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
+        'e69f7f6ee287b969198c3c9d6777bd38' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/bootstrap.php',
+        '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
-        '7e9bd612cc444b3eed788ebbe46263a0' => __DIR__ . '/..' . '/laminas/laminas-zendframework-bridge/src/autoload.php',
-        '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
+        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
+        'f598d06aa772fa33d905e87be6398fb1' => __DIR__ . '/..' . '/symfony/polyfill-intl-idn/bootstrap.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+        '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -55,7 +54,6 @@ class ComposerStaticInit50a5a940554dd22402aaa2d2197711c8
         'L' => 
         array (
             'Libraries\\' => 10,
-            'Laminas\\ZendFrameworkBridge\\' => 28,
             'Laminas\\Escaper\\' => 16,
         ),
         'G' => 
@@ -71,9 +69,8 @@ class ComposerStaticInit50a5a940554dd22402aaa2d2197711c8
         'D' => 
         array (
             'Doctrine\\Persistence\\' => 21,
-            'Doctrine\\Inflector\\' => 19,
+            'Doctrine\\Deprecations\\' => 22,
             'Doctrine\\Common\\Lexer\\' => 22,
-            'Doctrine\\Common\\Inflector\\' => 26,
             'Doctrine\\Common\\Collections\\' => 28,
             'Doctrine\\Common\\Cache\\' => 22,
             'Doctrine\\Common\\Annotations\\' => 28,
@@ -155,10 +152,6 @@ class ComposerStaticInit50a5a940554dd22402aaa2d2197711c8
         array (
             0 => __DIR__ . '/../../..' . '/application/libraries',
         ),
-        'Laminas\\ZendFrameworkBridge\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/laminas/laminas-zendframework-bridge/src',
-        ),
         'Laminas\\Escaper\\' => 
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-escaper/src',
@@ -181,19 +174,15 @@ class ComposerStaticInit50a5a940554dd22402aaa2d2197711c8
         ),
         'Doctrine\\Persistence\\' => 
         array (
-            0 => __DIR__ . '/..' . '/doctrine/persistence/lib/Doctrine/Persistence',
+            0 => __DIR__ . '/..' . '/doctrine/persistence/src/Persistence',
         ),
-        'Doctrine\\Inflector\\' => 
+        'Doctrine\\Deprecations\\' => 
         array (
-            0 => __DIR__ . '/..' . '/doctrine/inflector/lib/Doctrine/Inflector',
+            0 => __DIR__ . '/..' . '/doctrine/deprecations/lib/Doctrine/Deprecations',
         ),
         'Doctrine\\Common\\Lexer\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/lexer/lib/Doctrine/Common/Lexer',
-        ),
-        'Doctrine\\Common\\Inflector\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/doctrine/inflector/lib/Doctrine/Common/Inflector',
         ),
         'Doctrine\\Common\\Collections\\' => 
         array (
@@ -209,10 +198,9 @@ class ComposerStaticInit50a5a940554dd22402aaa2d2197711c8
         ),
         'Doctrine\\Common\\' => 
         array (
-            0 => __DIR__ . '/..' . '/doctrine/reflection/lib/Doctrine/Common',
-            1 => __DIR__ . '/..' . '/doctrine/event-manager/lib/Doctrine/Common',
-            2 => __DIR__ . '/..' . '/doctrine/persistence/lib/Doctrine/Common',
-            3 => __DIR__ . '/..' . '/doctrine/common/lib/Doctrine/Common',
+            0 => __DIR__ . '/..' . '/doctrine/event-manager/lib/Doctrine/Common',
+            1 => __DIR__ . '/..' . '/doctrine/persistence/src/Common',
+            2 => __DIR__ . '/..' . '/doctrine/common/lib/Doctrine/Common',
         ),
         'DeepCopy\\' => 
         array (
@@ -244,10 +232,10 @@ class ComposerStaticInit50a5a940554dd22402aaa2d2197711c8
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit50a5a940554dd22402aaa2d2197711c8::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit50a5a940554dd22402aaa2d2197711c8::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit50a5a940554dd22402aaa2d2197711c8::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit50a5a940554dd22402aaa2d2197711c8::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit248570faf8273b26bc60a7daaac4ff08::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit248570faf8273b26bc60a7daaac4ff08::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit248570faf8273b26bc60a7daaac4ff08::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit248570faf8273b26bc60a7daaac4ff08::$classMap;
 
         }, null, ClassLoader::class);
     }

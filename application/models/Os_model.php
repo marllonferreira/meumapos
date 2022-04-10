@@ -94,7 +94,7 @@ class Os_model extends CI_Model
 
     public function getById($id)
     {
-        $this->db->select('os.*, clientes.*, clientes.celular as celular_cliente, clientes.documento as documento_cliente, garantias.refGarantia, usuarios.telefone as telefone_usuario, usuarios.email as email_usuario, usuarios.nome');
+        $this->db->select('os.*, clientes.*, clientes.celular as celular_cliente, garantias.refGarantia, usuarios.telefone as telefone_usuario, usuarios.email as email_usuario, usuarios.nome');
         $this->db->from('os');
         $this->db->join('clientes', 'clientes.idClientes = os.clientes_id');
         $this->db->join('usuarios', 'usuarios.idUsuarios = os.usuarios_id');
@@ -183,7 +183,7 @@ class Os_model extends CI_Model
     public function autoCompleteProduto($q)
     {
         $this->db->select('*');
-        $this->db->limit(10);
+        $this->db->limit(5);
         $this->db->like('codDeBarra', $q);
         $this->db->or_like('descricao', $q);
         $query = $this->db->get('produtos');
@@ -259,7 +259,7 @@ class Os_model extends CI_Model
     public function autoCompleteServico($q)
     {
         $this->db->select('*');
-        $this->db->limit(10);
+        $this->db->limit(5);
         $this->db->like('nome', $q);
         $query = $this->db->get('servicos');
         if ($query->num_rows() > 0) {
@@ -317,6 +317,7 @@ class Os_model extends CI_Model
     {
         $totalServico = 0;
         $totalProdutos = 0;
+        $valorDesconto = 0;
         if ($servicos = $this->getServicos($id)) {
             foreach ($servicos as $s) {
                 $preco = $s->preco ?: $s->precoVenda;
@@ -328,8 +329,11 @@ class Os_model extends CI_Model
                 $totalProdutos = $totalProdutos + $p->subTotal;
             }
         }
+        if ($valorDescontoBD = $this->getById($id)) {
+            $valorDesconto = $valorDescontoBD->valor_desconto;
+        }
 
-        return ['totalServico' => $totalServico, 'totalProdutos' => $totalProdutos];
+        return ['totalServico' => $totalServico, 'totalProdutos' => $totalProdutos, 'valor_desconto' => $valorDesconto];
     }
 
     public function isEditable($id = null)
@@ -353,7 +357,7 @@ class Os_model extends CI_Model
         }
 
         $result = $this->valorTotalOS($id);
-        $amount = round(floatval($result['totalServico'] + $result['totalProdutos']), 2);
+        $amount = $result['valor_desconto'] != 0 ? round(floatval($result['valor_desconto']), 2) : round(floatval($result['totalServico'] + $result['totalProdutos']), 2);
 
         if ($amount <= 0) {
             return;
