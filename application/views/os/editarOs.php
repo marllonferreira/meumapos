@@ -208,7 +208,7 @@
                                     <div class="span3">
                                         <input type="hidden" name="idOs" id="idOs" value="<?php echo $result->idOs; ?>" />
                                         <label for="">Desconto</label>
-                                        <input style="width: 4em;" id="desconto" name="desconto" type="text" placeholder="%" maxlength="6" size="2" />
+                                        <input style="width: 4em;" id="desconto" name="desconto" type="text" placeholder="%" maxlength="6" size="2" autocomplete="off" />
                                         <strong><span style="color: red" id="errorAlert"></span></strong>
                                     </div>
                                     <div class="span2">
@@ -241,7 +241,7 @@
                                     </div>
                                     <div class="span2">
                                         <label for="">Quantidade</label>
-                                        <input type="text" placeholder="Quantidade" id="quantidade" name="quantidade" class="span12" />
+                                        <input type="number" placeholder="Quantidade" id="quantidade" name="quantidade" class="span12" autocomplete="off" />
                                     </div>
                                     <div class="span2">
                                         <label for="">&nbsp;</label>
@@ -305,7 +305,7 @@
                                     </div>
                                     <div class="span2">
                                         <label for="">Quantidade</label>
-                                        <input type="text" placeholder="Quantidade" id="quantidade_servico" name="quantidade" class="span12" />
+                                        <input type="number" placeholder="Quantidade" id="quantidade_servico" name="quantidade" class="span12" autocomplete="off" />
                                     </div>
                                     <div class="span2">
                                         <label for="">&nbsp;</label>
