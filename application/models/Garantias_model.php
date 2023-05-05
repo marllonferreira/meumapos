@@ -4,7 +4,6 @@
 
 class Garantias_model extends CI_Model
 {
-
     /**
      * author: Wilmerson Felipe
      * email: will.phelipe@gmail.com
@@ -39,6 +38,19 @@ class Garantias_model extends CI_Model
         $this->db->select('garantias.*, usuarios.telefone, usuarios.email, usuarios.nome');
         $this->db->from('garantias');
         $this->db->join('usuarios', 'usuarios.idUsuarios = garantias.usuarios_id');
+        $this->db->where('garantias.idGarantias', $id);
+        $this->db->limit(1);
+        return $this->db->get()->row();
+    }
+
+    public function getByIdOsGarantia($id)
+    {
+        $this->db->select('garantias.*, clientes.nomeCliente, os.idOS as idOs, os.dataFinal as osDataFinal,
+         usuarios.telefone as tecnicoTelefone, usuarios.email as tecnicoEmail, usuarios.nome as tecnicoName');
+        $this->db->from('garantias');
+        $this->db->join('os', 'os.garantias_id = garantias.idGarantias');
+        $this->db->join('clientes', 'os.clientes_id = clientes.idClientes');
+        $this->db->join('usuarios', 'os.usuarios_id = usuarios.idUsuarios');
         $this->db->where('garantias.idGarantias', $id);
         $this->db->limit(1);
         return $this->db->get()->row();

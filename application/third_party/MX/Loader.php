@@ -616,7 +616,7 @@ class MX_Loader extends CI_Loader
 
         if ($this->_module) {
 
-        // Backward function
+            // Backward function
             // Before PHP 7.1.0, list() only worked on numerical arrays and assumes the numerical indices start at 0.
             if (version_compare(phpversion(), '7.1', '<')) {
                 // php version isn't high enough

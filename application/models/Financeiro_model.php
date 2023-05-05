@@ -4,7 +4,6 @@
 
 class Financeiro_model extends CI_Model
 {
-
     /**
      * author: Ramon Silva
      * email: silva018-mg@yahoo.com.br
@@ -38,8 +37,8 @@ class Financeiro_model extends CI_Model
     public function getTotals($where = '')
     {
         $this->db->select("
-            SUM(case when tipo = 'despesa' then valor end) as despesas,
-            SUM(case when tipo = 'receita' then IF(valor_desconto, `valor_desconto`, `valor`) end) as receitas
+            SUM(case when tipo = 'despesa' then valor - desconto end) as despesas,
+            SUM(case when tipo = 'receita' then (IF(valor_desconto = 0, valor, valor_desconto)) end) as receitas
         ");
         $this->db->from('lancamentos');
 
@@ -50,6 +49,19 @@ class Financeiro_model extends CI_Model
         return (array) $this->db->get()->row();
     }
 
+    public function getEstatisticasFinanceiro2()
+    {
+        $sql = "SELECT SUM(CASE WHEN baixado = 1 AND tipo = 'receita' THEN IF(valor_desconto = 0, valor, valor_desconto) END) as total_receita,
+                       SUM(CASE WHEN baixado = 1 AND tipo = 'despesa' THEN valor - desconto END) as total_despesa,
+                       SUM(CASE WHEN baixado = 1 THEN desconto END) as total_valor_desconto,
+                       SUM(CASE WHEN baixado = 0 THEN desconto END) as total_valor_desconto_pendente,
+                       SUM(CASE WHEN tipo = 'receita' THEN valor END) as total_receita_sem_desconto,
+                       SUM(CASE WHEN tipo = 'despesa' THEN valor END) as total_despesa_sem_desconto,
+                       SUM(CASE WHEN baixado = 0 AND tipo = 'receita' THEN valor_desconto END) as total_receita_pendente,
+                       SUM(CASE WHEN baixado = 0 AND tipo = 'despesa' THEN valor_desconto END) as total_despesa_pendente FROM lancamentos";
+
+        return $this->db->query($sql)->row();
+    }
 
     public function getById($id)
     {
@@ -65,6 +77,16 @@ class Financeiro_model extends CI_Model
             return true;
         }
 
+        return false;
+    }
+
+    public function add1($table, $data1)
+    {
+        $this->db->insert($table, $data1);
+        if ($this->db->affected_rows() == '1') {
+            return true;
+        }
+        
         return false;
     }
 

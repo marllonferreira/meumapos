@@ -2,7 +2,6 @@
 
 class Relatorios_model extends CI_Model
 {
-
     /**
      * author: Ramon Silva
      * email: silva018-mg@yahoo.com.br
@@ -79,14 +78,27 @@ class Relatorios_model extends CI_Model
         if ($tipo != null) {
             $whereData .= "AND fornecedor = " . $this->db->escape($tipo);
         }
-        $query = "SELECT * FROM clientes WHERE dataCadastro $whereData ORDER BY nomeCliente";
+        $query = "SELECT idClientes, nomeCliente, sexo, pessoa_fisica,
+        documento, telefone, celular, contato, email, fornecedor,
+        dataCadastro, rua, numero, complemento, bairro, cidade, estado,
+        cep FROM clientes WHERE dataCadastro $whereData ORDER BY nomeCliente";
 
         return $this->db->query($query, [$dataInicial, $dataFinal])->result();
     }
 
     public function clientesRapid($array = false)
     {
+        $this->db->select('idClientes, nomeCliente, sexo, pessoa_fisica,
+        documento, telefone, celular, contato, email, fornecedor,
+        dataCadastro, rua, numero, complemento, bairro, cidade, estado,
+        cep');
+
         $this->db->order_by('nomeCliente', 'asc');
+
+        $this->db->select('idClientes, nomeCliente, sexo, pessoa_fisica,
+        documento, telefone, celular, contato, email, fornecedor,
+        dataCadastro, rua, numero, complemento, bairro, cidade, estado,
+        cep');
 
         $result = $this->db->get('clientes');
         if ($array) {
@@ -412,8 +424,8 @@ class Relatorios_model extends CI_Model
             SELECT
                 SUM(valor) total,
                 SUM(case when descricao NOT LIKE '%Fatura de OS%' AND descricao NOT LIKE '%Fatura de Venda%' then valor else 0 end) as totalOutros,
-                SUM(case when descricao LIKE '%Fatura de OS%' then valor else 0 end) as totalServicos,
-                SUM(case when descricao LIKE '%Fatura de Venda%' then valor else 0 end) as totalVendas
+                SUM(case when descricao LIKE '%Fatura de OS%' then valor - desconto else 0 end) as totalServicos,
+                SUM(case when descricao LIKE '%Fatura de Venda%' then valor - desconto else 0 end) as totalVendas
             FROM lancamentos
                 WHERE baixado = 1
                 AND tipo = 'receita'

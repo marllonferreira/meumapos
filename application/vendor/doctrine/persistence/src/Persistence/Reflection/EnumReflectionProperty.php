@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Doctrine\Persistence\Reflection;
 
 use BackedEnum;
@@ -17,9 +19,7 @@ class EnumReflectionProperty extends ReflectionProperty
     /** @var class-string<BackedEnum> */
     private $enumType;
 
-    /**
-     * @param class-string<BackedEnum> $enumType
-     */
+    /** @param class-string<BackedEnum> $enumType */
     public function __construct(ReflectionProperty $originalReflectionProperty, string $enumType)
     {
         $this->originalReflectionProperty = $originalReflectionProperty;
