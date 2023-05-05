@@ -42,8 +42,8 @@ class Mine extends CI_Controller
             $cliente = $this->check_credentials($token->email);
 
             if ($token == null && $cliente == null) {
-                $session_data = $cliente->nomeCliente ? ['nome' => $cliente->nomeCliente] : ['nome' => 'Inexistente'];
-                $this->session->set_userdata($session_data);
+                $session_mine_data = $cliente->nomeCliente ? ['nome' => $cliente->nomeCliente] : ['nome' => 'Inexistente'];
+                $this->session->set_userdata($session_mine_data);
                 log_info('Alteração de senha. Porém, os dados de acesso estão incorretos.');
                 echo json_encode(['result' => false, 'message' => 'Os dados de acesso estão incorretos.']);
             } else {
@@ -58,15 +58,15 @@ class Mine extends CI_Controller
                     $this->load->model('resetSenhas_model', '', true);
                     if ($this->Conecte_model->edit('clientes', $data, 'idClientes', $cliente->idClientes) == true) {
                         if ($this->resetSenhas_model->edit('resets_de_senha', $dataToken, 'id', $token->id) == true) {
-                            $session_data = $cliente->nomeCliente ? ['nome' => $cliente->nomeCliente] : ['nome' => 'Inexistente'];
-                            $this->session->set_userdata($session_data);
+                            $session_mine_data = $cliente->nomeCliente ? ['nome' => $cliente->nomeCliente] : ['nome' => 'Inexistente'];
+                            $this->session->set_userdata($session_mine_data);
                             log_info('Alteração da senha realizada com sucesso.');
                             echo json_encode(['result' => true]);
                         }
                     }
                 } else {
-                    $session_data = $cliente->nomeCliente ? ['nome' => $cliente->nomeCliente] : ['nome' => 'Inexistente'];
-                    $this->session->set_userdata($session_data);
+                    $session_mine_data = $cliente->nomeCliente ? ['nome' => $cliente->nomeCliente] : ['nome' => 'Inexistente'];
+                    $this->session->set_userdata($session_mine_data);
                     log_info('Alteração de senha. Porém, dados divergentes.');
                     echo json_encode(['result' => false, 'message' => 'Dados divergentes.']);
                 }
@@ -88,16 +88,16 @@ class Mine extends CI_Controller
 
             if ($this->validateDate($token->data_expiracao)) {
                 $this->session->set_flashdata(['error' => 'Token expirado']);
-                $session_data = $token->email ? ['nome' => $token->email] : ['nome' => 'Inexistente'];
-                $this->session->set_userdata($session_data);
+                $session_mine_data = $token->email ? ['nome' => $token->email] : ['nome' => 'Inexistente'];
+                $this->session->set_userdata($session_mine_data);
                 log_info('Digitou Token. Porém, Token expirado');
                 return redirect(base_url() . 'index.php/mine');
             } else {
                 if ($token) {
                     if (($cliente = $this->check_credentials($token->email)) == null) {
                         $this->session->set_flashdata(['error' => 'Os dados de acesso estão incorretos.']);
-                        $session_data = $cliente->nomeCliente ? ['nome' => $cliente->nomeCliente] : ['nome' => 'Inexistente'];
-                        $this->session->set_userdata($session_data);
+                        $session_mine_data = $cliente->nomeCliente ? ['nome' => $cliente->nomeCliente] : ['nome' => 'Inexistente'];
+                        $this->session->set_userdata($session_mine_data);
                         log_info('Digitou Token. Porém, os dados de acesso estão incorretos.');
                         return $this->load->view('conecte/token_digita');
                     } else {
@@ -105,16 +105,16 @@ class Mine extends CI_Controller
                             return $this->load->view('conecte/nova_senha', $token);
                         } else {
                             $this->session->set_flashdata('error', 'Dados divergentes ou Token invalido.');
-                            $session_data = $cliente->nomeCliente ? ['nome' => $cliente->nomeCliente] : ['nome' => 'Inexistente'];
-                            $this->session->set_userdata($session_data);
+                            $session_mine_data = $cliente->nomeCliente ? ['nome' => $cliente->nomeCliente] : ['nome' => 'Inexistente'];
+                            $this->session->set_userdata($session_mine_data);
                             log_info('Digitou Token. Porém, dados divergentes ou Token invalido.');
                             return redirect(base_url() . 'index.php/mine');
                         }
                     }
                 } else {
                     $this->session->set_flashdata(['error' => 'Token Invalido']);
-                    $session_data = $token->email ? ['nome' => $token->email] : ['nome' => 'Inexistente'];
-                    $this->session->set_userdata($session_data);
+                    $session_mine_data = $token->email ? ['nome' => $token->email] : ['nome' => 'Inexistente'];
+                    $this->session->set_userdata($session_mine_data);
                     log_info('Digitou Token. Porém, Token invalido.');
                     return $this->load->view('conecte/token_digita');
                 }
@@ -130,23 +130,23 @@ class Mine extends CI_Controller
 
         if ($token == null || $token == "") {
             $this->session->set_flashdata(['error' => 'Token invalido']);
-            $session_data = $token->email ? ['nome' => $token->email] : ['nome' => 'Inexistente'];
-            $this->session->set_userdata($session_data);
+            $session_mine_data = $token->email ? ['nome' => $token->email] : ['nome' => 'Inexistente'];
+            $this->session->set_userdata($session_mine_data);
             log_info('Acesso via link do email (Token). Porém, Token invalido.');
             return $this->load->view('conecte/token_digita');
         } else {
             if ($this->validateDate($token->data_expiracao)) {
                 $this->session->set_flashdata(['error' => 'Token expirado']);
-                $session_data = $token->email ? ['nome' => $token->email] : ['nome' => 'Inexistente'];
-                $this->session->set_userdata($session_data);
+                $session_mine_data = $token->email ? ['nome' => $token->email] : ['nome' => 'Inexistente'];
+                $this->session->set_userdata($session_mine_data);
                 log_info('Acesso via link do email (Token). Porém, Token expirado');
                 return redirect(base_url() . 'index.php/mine');
             } else {
                 if ($token) {
                     if (($cliente = $this->check_credentials($token->email)) == null) {
                         $this->session->set_flashdata(['error' => 'Os dados de acesso estão incorretos.']);
-                        $session_data = $cliente->nomeCliente ? ['nome' => $cliente->nomeCliente] : ['nome' => 'Inexistente'];
-                        $this->session->set_userdata($session_data);
+                        $session_mine_data = $cliente->nomeCliente ? ['nome' => $cliente->nomeCliente] : ['nome' => 'Inexistente'];
+                        $this->session->set_userdata($session_mine_data);
                         log_info('Acesso via link do email (Token). Porém, dados de acesso estão incorretos.');
                         return $this->load->view('conecte/token_digita');
                     } else {
@@ -154,16 +154,16 @@ class Mine extends CI_Controller
                             return $this->load->view('conecte/nova_senha', $token);
                         } else {
                             $this->session->set_flashdata('error', 'Dados divergentes ou Token invalido.');
-                            $session_data = $cliente->nomeCliente ? ['nome' => $cliente->nomeCliente] : ['nome' => 'Inexistente'];
-                            $this->session->set_userdata($session_data);
+                            $session_mine_data = $cliente->nomeCliente ? ['nome' => $cliente->nomeCliente] : ['nome' => 'Inexistente'];
+                            $this->session->set_userdata($session_mine_data);
                             log_info('Acesso via link do email (Token). Porém, dados divergentes ou Token invalido.');
                             return redirect(base_url() . 'index.php/mine');
                         }
                     }
                 } else {
                     $this->session->set_flashdata(['error' => 'Token Invalido']);
-                    $session_data = $token->email ? ['nome' => $token->email] : ['nome' => 'Inexistente'];
-                    $this->session->set_userdata($session_data);
+                    $session_mine_data = $token->email ? ['nome' => $token->email] : ['nome' => 'Inexistente'];
+                    $this->session->set_userdata($session_mine_data);
                     log_info('Acesso via link do email (Token). Porém, Token invalido.');
                     return $this->load->view('conecte/token_digita');
                 }
@@ -176,8 +176,8 @@ class Mine extends CI_Controller
     {
         if (!$cliente = $this->check_credentials($this->input->post('email'))) {
             $this->session->set_flashdata(['error' => 'Os dados de acesso estão incorretos.']);
-            $session_data = $cliente->nomeCliente ? ['nome' => $cliente->nomeCliente] : ['nome' => 'Inexistente'];
-            $this->session->set_userdata($session_data);
+            $session_mine_data = $cliente->nomeCliente ? ['nome' => $cliente->nomeCliente] : ['nome' => 'Inexistente'];
+            $this->session->set_userdata($session_mine_data);
             log_info('Cliente solicitou alteração de senha. Porém falhou ao realizar solicitação!');
             redirect($_SERVER['HTTP_REFERER']);
         } else {
@@ -190,15 +190,15 @@ class Mine extends CI_Controller
             ];
             if ($this->resetSenhas_model->add('resets_de_senha', $data) == true) {
                 $this->enviarRecuperarSenha($cliente->idClientes, $cliente->email, "Recuperar Senha", json_encode($data));
-                $session_data = ['nome' => $cliente->nomeCliente];
-                $this->session->set_userdata($session_data);
+                $session_mine_data = ['nome' => $cliente->nomeCliente];
+                $this->session->set_userdata($session_mine_data);
                 log_info('Cliente solicitou alteração de senha.');
                 $this->session->set_flashdata('success', 'Solicitação realizada com sucesso! <br> Um e-mail com as instruções será enviado para ' . $cliente->email);
                 redirect(base_url() . 'index.php/mine');
             } else {
                 $this->session->set_flashdata('error', 'Falha ao realizar solicitação!');
-                $session_data = $cliente->nomeCliente ? ['nome' => $cliente->nomeCliente] : ['nome' => 'Inexistente'];
-                $this->session->set_userdata($session_data);
+                $session_mine_data = $cliente->nomeCliente ? ['nome' => $cliente->nomeCliente] : ['nome' => 'Inexistente'];
+                $this->session->set_userdata($session_mine_data);
                 log_info('Cliente solicitou alteração de senha. Porém falhou ao realizar solicitação!');
                 redirect(current_url());
             }
@@ -225,9 +225,9 @@ class Mine extends CI_Controller
             if ($cliente) {
                 // Verificar credenciais do usuário
                 if (password_verify($password, $cliente->senha)) {
-                    $session_data = ['nome' => $cliente->nomeCliente, 'cliente_id' => $cliente->idClientes, 'email' => $cliente->email, 'conectado' => true, 'isCliente' => true];
-                    $this->session->set_userdata($session_data);
-                    log_info($_SERVER['HTTP_CLIENT_IP'] . 'Efetuou login no sistema');
+                    $session_mine_data = ['nome' => $cliente->nomeCliente, 'cliente_id' => $cliente->idClientes, 'email' => $cliente->email, 'conectado' => true, 'isCliente' => true];
+                    $this->session->set_userdata($session_mine_data);
+                    log_info($_SERVER['REMOTE_ADDR'] . ' Efetuou login no sistema');
                     echo json_encode(['result' => true]);
                 } else {
                     echo json_encode(['result' => false, 'message' => 'Os dados de acesso estão incorretos.']);
@@ -602,7 +602,6 @@ class Mine extends CI_Controller
     public function minha_ordem_de_servico($y = null, $when = null)
     {
         if (($y != null) && (is_numeric($y))) {
-
             // Do not forget this number -> 44023
             // function sending => y = (7653 * ID) + 44023
             // function recieving => x = (y - 44023) / 7653
@@ -818,8 +817,7 @@ class Mine extends CI_Controller
         $dados['cliente'] = $this->clientes_model->getById($idClientes);
         $dados['resets_de_senha'] = json_decode($token);
 
-        $emitente = $dados['emitente'][0]->email;
-        $emitenteNome = $dados['emitente'][0]->nome;
+        $emitente = $dados['emitente'];
         $remetente = $clienteEmail;
 
         $html = $this->load->view('conecte/emails/clientenovasenha', $dados, true);
@@ -827,7 +825,7 @@ class Mine extends CI_Controller
         $this->load->model('email_model');
 
         $headers = [
-            'From' => "\"$emitenteNome\" <$emitente>",
+            'From' => "\"$emitente->nome\" <$emitente->email>",
             'Subject' => $assunto,
             'Return-Path' => ''
         ];
@@ -857,7 +855,7 @@ class Mine extends CI_Controller
         $dados['servicos'] = $this->os_model->getServicos($idOs);
         $dados['emitente'] = $this->mapos_model->getEmitente();
 
-        $emitente = $dados['emitente'][0]->email;
+        $emitente = $dados['emitente'];
         if (!isset($emitente)) {
             return false;
         }
@@ -869,7 +867,7 @@ class Mine extends CI_Controller
         $remetentes = array_unique($remetentes);
         foreach ($remetentes as $remetente) {
             $headers = [
-                'From' => $emitente,
+                'From' => $emitente->email,
                 'Subject' => $assunto,
                 'Return-Path' => ''
             ];
@@ -895,9 +893,8 @@ class Mine extends CI_Controller
         $dados['emitente'] = $this->mapos_model->getEmitente();
         $dados['cliente'] = $this->clientes_model->getById($id);
 
-        $emitente = $dados['emitente'][0]->email;
-        $emitenteNome = $dados['emitente'][0]->nome;
-        $remetente = $dados['cliente']->email;
+        $emitente = $dados['emitente'];
+        $remetente = $dados['cliente'];
         $assunto = 'Bem-vindo!';
 
         $html = $this->load->view('os/emails/clientenovo', $dados, true);
@@ -905,12 +902,12 @@ class Mine extends CI_Controller
         $this->load->model('email_model');
 
         $headers = [
-            'From' => "\"$emitenteNome\" <$emitente>",
+            'From' => "\"$emitente->nome\" <$emitente->email>",
             'Subject' => $assunto,
             'Return-Path' => ''
         ];
         $email = [
-            'to' => $remetente,
+            'to' => $remetente->email,
             'message' => $html,
             'status' => 'pending',
             'date' => date('Y-m-d H:i:s'),
@@ -930,8 +927,7 @@ class Mine extends CI_Controller
         $dados['emitente'] = $this->mapos_model->getEmitente();
         $dados['cliente'] = $this->clientes_model->getById($id);
 
-        $emitente = $dados['emitente'][0]->email;
-        $emitenteNome = $dados['emitente'][0]->nome;
+        $emitente = $dados['emitente'];
         $assunto = 'Novo Cliente Cadastrado no Sistema';
 
         $usuarios = [];
@@ -941,7 +937,7 @@ class Mine extends CI_Controller
             $dados['usuario'] = $usuario;
             $html = $this->load->view('os/emails/clientenovonotifica', $dados, true);
             $headers = [
-                'From' => "\"$emitenteNome\" <$emitente>",
+                'From' => "\"$emitente->nome\" <$emitente->email>",
                 'Subject' => $assunto,
                 'Return-Path' => ''
             ];

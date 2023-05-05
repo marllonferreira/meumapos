@@ -114,7 +114,7 @@ input[type="text"] {
   height       : 33px;
   border-radius: 5px;
   padding      : 3px 9px 3px 25px;
-  color        : #000000;
+  color        : #b7b2be;
   width        : 270px;
 }
 
@@ -122,7 +122,7 @@ input[type="password"] {
   height       : 33px;
   border-radius: 5px;
   padding      : 3px 9px 3px 25px;
-  color        : #000000;
+  color        : #b7b2be;
   width        : 270px;
 }
 
@@ -132,7 +132,7 @@ input[type="password"] {
 }
 
 label {
-  color        : #ccd1d9;
+  color        : #fa9c8e;
   position     : absolute;
   margin-bottom: -3px;
   transition   : 0.3s ease-out;
@@ -153,7 +153,7 @@ input:focus {
 .iconU {
   position   : absolute;
   font-size  : 1.5em;
-  color      : #d4d4d9;
+  color      : #fa9c8e;
   padding    : 6px;
   margin-left: -2px;
 }

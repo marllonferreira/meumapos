@@ -83,7 +83,7 @@ if (ENVIRONMENT === 'pre_installation') {
  */
 switch (ENVIRONMENT) {
     case 'development':
-        error_reporting(-1);
+        error_reporting(E_ALL & ~E_DEPRECATED);
         ini_set('display_errors', 1);
         break;
 
@@ -295,8 +295,6 @@ if (!isset($view_folder[0]) && is_dir(APPPATH . 'views' . DIRECTORY_SEPARATOR)) 
 }
 
 define('VIEWPATH', $view_folder . DIRECTORY_SEPARATOR);
-
-date_default_timezone_set('America/Sao_Paulo');
 
 /*
  * --------------------------------------------------------------------

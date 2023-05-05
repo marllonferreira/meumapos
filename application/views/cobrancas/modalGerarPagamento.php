@@ -1,5 +1,5 @@
 <?php
-    $this->load->config('payment_gateways');
+$this->load->config('payment_gateways');
 ?>
 
 <script>

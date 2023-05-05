@@ -4,7 +4,6 @@
 
 class Garantias extends MY_Controller
 {
-
     /**
      * author: Wilmerson Felipe
      * email: will.phelipe@gmail.com
@@ -62,7 +61,7 @@ class Garantias extends MY_Controller
                 'dataGarantia' => date('Y/m/d'),
                 'refGarantia' => $this->input->post('refGarantia'),
                 'textoGarantia' => $this->input->post('textoGarantia'),
-                'usuarios_id' => $this->session->userdata('id'),
+                'usuarios_id' => $this->session->userdata('id_admin'),
             ];
 
             if (is_numeric($id = $this->garantias_model->add('garantias', $data, true))) {
@@ -154,6 +153,26 @@ class Garantias extends MY_Controller
         $this->data['emitente'] = $this->mapos_model->getEmitente();
 
         $this->load->view('garantias/imprimirGarantia', $this->data);
+    }
+
+    public function imprimirGarantiaOs()
+    {
+        if (!$this->uri->segment(3) || !is_numeric($this->uri->segment(3))) {
+            $this->session->set_flashdata('error', 'Item não pode ser encontrado, parâmetro não foi passado corretamente.');
+            redirect('mapos');
+        }
+
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'vGarantia')) {
+            $this->session->set_flashdata('error', 'Você não tem permissão para imprimir o Termo de Garantia.');
+            redirect(base_url());
+        }
+
+        $this->data['custom_error'] = '';
+        $this->load->model('mapos_model');
+        $this->data['osGarantia'] = $this->garantias_model->getByIdOsGarantia($this->uri->segment(3));
+        $this->data['emitente'] = $this->mapos_model->getEmitente();
+
+        $this->load->view('garantias/imprimirGarantiaOs', $this->data);
     }
 
     public function excluir()

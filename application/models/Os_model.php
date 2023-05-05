@@ -4,7 +4,6 @@ use Piggly\Pix\StaticPayload;
 
 class Os_model extends CI_Model
 {
-
     /**
      * author: Ramon Silva
      * email: silva018-mg@yahoo.com.br
@@ -94,7 +93,7 @@ class Os_model extends CI_Model
 
     public function getById($id)
     {
-        $this->db->select('os.*, clientes.*, clientes.celular as celular_cliente, clientes.documento as documento_cliente, garantias.refGarantia, usuarios.telefone as telefone_usuario, usuarios.email as email_usuario, usuarios.nome');
+        $this->db->select('os.*, clientes.*, clientes.celular as celular_cliente, garantias.refGarantia, usuarios.telefone as telefone_usuario, usuarios.email as email_usuario, usuarios.nome');
         $this->db->from('os');
         $this->db->join('clientes', 'clientes.idClientes = os.clientes_id');
         $this->db->join('usuarios', 'usuarios.idUsuarios = os.usuarios_id');
@@ -364,14 +363,12 @@ class Os_model extends CI_Model
         }
 
         $pix = (new StaticPayload())
-            ->applyValidCharacters()
-            ->applyUppercase()
-            ->setPixKey(getPixKeyType($pixKey), $pixKey)
-            ->setMerchantName($emitente->nome, true)
-            ->setMerchantCity($emitente->cidade, true)
             ->setAmount($amount)
             ->setTid($id)
-            ->setDescription(sprintf("%s OS %s", $emitente->nome, $id), true);
+            ->setDescription(sprintf("%s OS %s", substr($emitente->nome, 0, 18), $id), true)
+            ->setPixKey(getPixKeyType($pixKey), $pixKey)
+            ->setMerchantName($emitente->nome)
+            ->setMerchantCity($emitente->cidade);
 
         return $pix->getQRCode();
     }

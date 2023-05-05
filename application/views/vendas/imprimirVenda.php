@@ -27,25 +27,25 @@
                                         <td colspan="3" class="alert">Você precisa configurar os dados do emitente. >>><a href="<?php echo base_url(); ?>index.php/mapos/emitente">Configurar</a>
                                             <<<< /td>
                                     </tr> <?php
-                                        } else { ?> <tr>
-                                        <td style="width: 25%"><img src=" <?php echo $emitente[0]->url_logo; ?> "></td>
+                                } else { ?> <tr>
+                                        <td style="width: 25%"><img src=" <?php echo $emitente->url_logo; ?> "></td>
 
                                         <td> <span style="font-size: 17px;">
 
-                                                <?php echo $emitente[0]->nome; ?></span> </br>
+                                                <?php echo $emitente->nome; ?></span> </br>
                                             <span style="font-size: 12px; ">
                                                 <span class="icon">
                                                     <i class="fas fa-fingerprint" style="margin:5px 1px"></i>
-                                                    <?php echo $emitente[0]->cnpj; ?> </br>
+                                                    <?php echo $emitente->cnpj; ?> </br>
                                                     <span class="icon">
                                                         <i class="fas fa-map-marker-alt" style="margin:4px 3px"></i>
-                                                        <?php echo $emitente[0]->rua . ', nº:' . $emitente[0]->numero . ', ' . $emitente[0]->bairro . ' - ' . $emitente[0]->cidade . ' - ' . $emitente[0]->uf; ?>
+                                                        <?php echo $emitente->rua . ', nº:' . $emitente->numero . ', ' . $emitente->bairro . ' - ' . $emitente->cidade . ' - ' . $emitente->uf; ?>
 
                                                     </span> </br> <span>
                                                         <span class="icon">
                                                             <i class="fas fa-comments" style="margin:5px 1px"></i>
                                                             E-mail:
-                                                            <?php echo $emitente[0]->email . ' - Fone: ' . $emitente[0]->telefone; ?> </br>
+                                                            <?php echo $emitente->email . ' - Fone: ' . $emitente->telefone; ?> </br>
                                                             <span class="icon">
                                                                 <i class="fas fa-user-check"></i>
                                                                 Vendedor: <?php echo $result->nome ?>
@@ -63,7 +63,7 @@
                                         </td>
                                     </tr>
                                 <?php
-                                        } ?>
+                                } ?>
                             </tbody>
                         </table>
                         <table class="table">
@@ -85,10 +85,10 @@
                                             </li>
                                         </ul>
                                     </td>
-
                                     <?php if ($qrCode) : ?>
                                         <td style="width: 15%; padding-left: 0">
-                                            <img style="margin:12px auto;" src="<?= $qrCode ?>" alt="QR Code de Pagamento" />
+                                            <img style="margin:12px 0px 2px 7px" src="<?php echo base_url(); ?>assets/img/logo_pix.png" width="64px" alt="QR Code de Pagamento" />
+                                            <img style="margin:6px 12px 2px 0px" width="94" src="<?= $qrCode ?>" alt="QR Code de Pagamento" />
                                         </td>
                                     <?php endif ?>
                                 </tr>
@@ -119,26 +119,34 @@
                                         echo '<td>' . ($p->preco ?: $p->precoVenda) . '</td>';
                                         echo '<td> ' . number_format($p->subTotal, 2, ',', '.') . '</td>';
                                         echo '</tr>';
+                                        echo '<hr />';
                                     } ?>
-                                    <?php if ($result->valor_desconto !=0 && $result->desconto !=0) { ?>
                                     <tr>
-                                        <td colspan="4" style="text-align: right"><strong>Desconto: R$</strong></td>
-                                        <td>
-                                            <strong>
-                                                <?php echo number_format($result->valor_desconto - $totalProdutos, 2, ',', '.'); ?>
-                                            </strong>
-                                        </td>
+                                        <td colspan="4" style="text-align: right"><strong>Total:</strong></td>
+                                        <td><strong>R$
+                                                <?php echo number_format($totalProdutos, 2, ',', '.'); ?></strong></td>
                                     </tr>
-                                    <?php } ?>
-                                    <tr>
-                                        <td colspan="4" style="text-align: right"><strong>Total: R$</strong></td>
-                                        <td><strong>
-                                        <?php echo number_format($result->desconto != 0 && $result->valor_desconto != 0 ? $result->valor_desconto : $totalProdutos, 2, ',', '.'); ?>
-                                    </tr>
+                                    <hr />
                                 </tbody>
                             </table>
                         <?php
                         } ?>
+                        <hr />
+                        <h4 style="text-align: right">Total: R$
+                            <?php echo number_format($totalProdutos, 2, ',', '.'); ?>
+                        </h4>
+                        <?php if ($result->valor_desconto != 0 && $result->desconto != 0) {
+                            ?>
+                        <h4 style="text-align: right">Desconto: R$
+                            <?php echo number_format($result->valor_desconto - $totalProdutos, 2, ',', '.'); ?>
+                        </h4>
+                        <h4 style="text-align: right">Total Com Desconto: R$
+                            <?php echo number_format($result->valor_desconto, 2, ',', '.'); ?>
+                        </h4>
+                    <?php
+                        } ?>
+                    </div>
+                    <hr />
                         <h5 style="text-align: left">Observações:</h5>
                         <table class="table">
                             <tbody>
