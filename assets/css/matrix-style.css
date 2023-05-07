@@ -23,7 +23,7 @@ body {
   --funSider2 : #0467fc;
   --subtitle  : #2c2b31;
   --title     : #d4d8e0;
-  --widget-box: #e6e9f3;
+  --widget-box: #FFFFFF;
   --toggle    : #676779;
 
   /* === Tema pure dark === */
@@ -203,7 +203,7 @@ input[type="text"],
 .row-fluid input[class*="span"],
 input[type="number"],
 select[class*="span"] {
-  background  : #e6e9f3;
+  background  : #f1f3f4;
   border-color: #b1b9be;
 }
 
