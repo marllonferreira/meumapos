@@ -61,8 +61,9 @@ $totalProdutos = 0; ?>
                                             <li>
                                                 <span>
                                                     <b>Cliente: </b>
-                                                    <span><?php echo $result->nomeCliente ?></span>
-                                                    <span style="padding-left: 4%;"><b>Celular:</b> <?php echo $result->celular_cliente ?></span>
+                                                    <span><?php echo $result->nomeCliente ?></span></b>
+                                                    <span>CPF/CNPJ: <?php echo $result->documento_cliente ?></span>
+                                                    <span style="padding-left: 1%;"><b>Celular:</b> <?php echo $result->celular_cliente ?></span>
                                             </li>
                                         </ul>
                                     </td>
@@ -275,8 +276,9 @@ $totalProdutos = 0; ?>
                                                     <li>
                                                         <span>
                                                             <b>Cliente: </b>
-                                                            <span><?php echo $result->nomeCliente ?></span>
-                                                            <span style="padding-left: 4%;"><b>Celular:</b> <?php echo $result->celular_cliente ?></span>
+                                                            <span><?php echo $result->nomeCliente ?></span></b>
+                                                            <span>CPF/CNPJ: <?php echo $result->documento_cliente ?></span>
+                                                            <span style="padding-left: 1%;"><b>Celular:</b> <?php echo $result->celular_cliente ?></span>
                                                     </li>
                                                 </ul>
                                             </td>
