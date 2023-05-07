@@ -124,8 +124,10 @@ $totalProdutos = 0; ?>
 																<span>CPF/CNPJ: <?php echo $result->documento_cliente ?></span><br />
                                                                 <span><?php echo $result->rua ?>, <?php echo $result->numero ?>, <?php echo $result->bairro ?></span>,
                                                                 <span><?php echo $result->cidade ?> - <?php echo $result->estado ?></span><br>
-                                                                <span>E-mail: <?php echo $result->email ?></span><br>
-                                                                <span>Celular: <?php echo $result->celular_cliente ?></span>
+									           <!-- começo --> 	<?php if ($result->email != null) { ?>
+                                                                <span>E-mail: <?php echo $result->email ?></span><br><?php } ?> <!-- fim -->								    			           
+									           <!-- começo -->  <?php if ($result->celular != null) { ?>
+                                                                <span>Celular: <?php echo $result->celular_cliente ?></span><?php } ?> <!-- fim -->
                                                         </li>
                                                     </ul>
                                                 </td>
@@ -345,9 +347,11 @@ $totalProdutos = 0; ?>
                                                                 <span><?php echo $result->nomeCliente ?></span>
 																<span>CPF/CNPJ: <?php echo $result->documento_cliente ?></span><br />
                                                                 <span><?php echo $result->rua ?>, <?php echo $result->numero ?>, <?php echo $result->bairro ?></span>,
-                                                                <span><?php echo $result->cidade ?> - <?php echo $result->estado ?></span><br>
-                                                                <span>E-mail: <?php echo $result->email ?></span><br>
-                                                                <span>Celular: <?php echo $result->celular_cliente ?></span>
+                                                                 <span><?php echo $result->cidade ?> - <?php echo $result->estado ?></span><br>
+									           <!-- começo --> 	<?php if ($result->email != null) { ?>
+                                                                <span>E-mail: <?php echo $result->email ?></span><br><?php } ?> <!-- fim -->								    			           
+									           <!-- começo -->  <?php if ($result->celular != null) { ?>
+                                                                <span>Celular: <?php echo $result->celular_cliente ?></span><?php } ?> <!-- fim -->
                                                         </li>
                                                     </ul>
                                                 </td>

@@ -83,8 +83,10 @@
                                                     <span><?php echo $result->nomeCliente ?></span><br />
                                                     <span><?php echo $result->rua ?>, <?php echo $result->numero ?>, <?php echo $result->bairro ?></span>,
                                                     <span><?php echo $result->cidade ?> - <?php echo $result->estado ?></span><br>
-                                                    <span>E-mail: <?php echo $result->email ?></span><br>
-                                                    <span>Contato: <?php echo $result->celular_cliente ?></span>
+									<!-- começo -->	<?php if ($result->email != null) { ?>
+                                                    <span>E-mail: <?php echo $result->email ?></span><br><?php } ?> <!-- fim -->
+									<!-- começo -->	<?php if ($result->celular != null) { ?>
+                                                    <span>Contato: <?php echo $result->celular_cliente ?></span> <?php } ?> <!-- fim -->
                                             </li>
                                         </ul>
                                     </td>
