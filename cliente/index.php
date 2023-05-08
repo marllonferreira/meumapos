@@ -1,1 +1,1 @@
-<!DOCTYPE html><html><head>    <meta charset="utf-8"/>    <title>INTELSYSTECH AREA DO CLIENTE</title>     <meta http-equiv="refresh" content="0; URL='../index.php/mine/'"/></head><body>........</body></html>
+<!DOCTYPE html><html><?phpheader("Location: ../index.php/mine/"); /* Redirect browser *//* Make sure that code below does not get executed when we redirect. */exit;?><head>    <meta charset="utf-8"/>    <title>INTELSYSTECH AREA DO CLIENTE</title></head><body>........</body></html>
