@@ -157,8 +157,9 @@
                                     </div>
                                     <div class="span12" style="padding: 0; margin-left: 0">
                                         <div class="span6 offset3" style="display:flex;justify-content: center">
-                                            <button class="button btn btn-primary" id="btnContinuar"><span class="button__icon"><i class="bx bx-sync"></i></span><span class="button__text2">Atualizar</span></button>
+                                            
                                             <a href="<?php echo base_url() ?>index.php/os" class="button btn btn-mini btn-warning"><span class="button__icon"><i class="bx bx-undo"></i></span> <span class="button__text2">Voltar</span></a>
+											<button class="button btn btn-primary" id="btnContinuar"><span class="button__icon"><i class="bx bx-sync"></i></span><span class="button__text2">Atualizar</span></button>
 											<a href="#subir" class="button btn btn-mini btn-inverse"><span class="button__icon"><i class="bx bx-up-arrow-circle"></i></span> <span class="button__text2">Subir</span></a>
                                         </div>
                                     </div>
