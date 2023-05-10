@@ -231,7 +231,7 @@ foreach ($produtos as $p) {
             <div class="span12" style="margin-left: 0">
                 <div class="span4" style="margin-left: 0">
                     <label for="vencimento">Data Entrada*</label>
-                    <input class="span12 datepicker" autocomplete="off" id="vencimento" type="text" name="vencimento" />
+                    <input class="span12 datepicker" autocomplete="off" id="vencimento" type="text" name="vencimento" value="<?php echo date('d/m/Y', strtotime($result->dataVenda)); ?>"/>
                 </div>
             </div>
             <div class="span12" style="margin-left: 0">
