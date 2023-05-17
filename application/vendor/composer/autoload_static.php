@@ -75,6 +75,7 @@ class ComposerStaticInit5f530d56dac3d606722a5ad834d24aa3
         'M' => 
         array (
             'Mpdf\\QrCode\\' => 12,
+            'Mpdf\\PsrLogAwareTrait\\' => 22,
             'Mpdf\\' => 5,
             'MercadoPago\\' => 12,
         ),
@@ -82,10 +83,6 @@ class ComposerStaticInit5f530d56dac3d606722a5ad834d24aa3
         array (
             'Libraries\\' => 10,
             'Laminas\\Escaper\\' => 16,
-        ),
-        'H' => 
-        array (
-            'Http\\Message\\' => 13,
         ),
         'G' => 
         array (
@@ -240,6 +237,10 @@ class ComposerStaticInit5f530d56dac3d606722a5ad834d24aa3
         array (
             0 => __DIR__ . '/..' . '/mpdf/qrcode/src',
         ),
+        'Mpdf\\PsrLogAwareTrait\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mpdf/psr-log-aware-trait/src',
+        ),
         'Mpdf\\' => 
         array (
             0 => __DIR__ . '/..' . '/mpdf/mpdf/src',
@@ -259,10 +260,6 @@ class ComposerStaticInit5f530d56dac3d606722a5ad834d24aa3
         'Laminas\\Escaper\\' => 
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-escaper/src',
-        ),
-        'Http\\Message\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/php-http/message-factory/src',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (
@@ -294,8 +291,8 @@ class ComposerStaticInit5f530d56dac3d606722a5ad834d24aa3
         ),
         'Doctrine\\Common\\' => 
         array (
-            0 => __DIR__ . '/..' . '/doctrine/event-manager/src',
-            1 => __DIR__ . '/..' . '/doctrine/common/src',
+            0 => __DIR__ . '/..' . '/doctrine/common/src',
+            1 => __DIR__ . '/..' . '/doctrine/event-manager/src',
         ),
         'DeepCopy\\' => 
         array (
