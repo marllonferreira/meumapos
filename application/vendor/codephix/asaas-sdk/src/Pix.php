@@ -19,12 +19,11 @@ class Pix {
     {
 
         $resturn = $this->http->get('/payments/'.$id.'/pixQrCode');
-
         if(!empty($resturn->encodedImage)){
             $resturn->success = 1;
             return $resturn;
         }else{
-            return json_encode(array('success' => false));
+            return $resturn;
         }
 
         /*
@@ -76,6 +75,47 @@ class Pix {
         //$response = $this->http->request('GET', $this->base_url . $url);
 
         return $response;
+    }
+
+    // Retorna a listagem de cobranças
+    public function getAll(array $filtros = []){
+        $filtro = '';
+        if(is_array($filtros)){
+            if($filtros){
+                foreach($filtros as $key => $f){
+                    if(!empty($f)){
+                        if($filtro){
+                            $filtro .= '&';
+                        }
+                        $filtro .= $key.'='.$f;
+                    }
+                }
+                $filtro = '?'.$filtro;
+            }
+        }
+        return $this->http->get('/pix/transactions'.$filtro);
+    }
+
+    public function getAllAddressKeys(?array $filtros = []){
+        $filtros = ((!empty($filtros)) ? http_build_query($filtros) : '');
+        return $this->http->get('/pix/addressKeys?'.$filtros);
+    }
+
+    public function getKeys($id){
+        return $this->http->get('/pix/addressKeys/'.$id);
+    }
+
+    public function addressKeys($type = 'EVP'){
+        $dados = [
+            'type' => $type,
+        ];
+        return $this->http->post('/pix/addressKeys',$dados);
+    }
+    public function deleteKeys($id){
+        return $this->http->delete('/pix/addressKeys/'.$id);
+    }
+    public function qrCodeStatic(?array $dados){
+        return $this->http->post('/pix/qrCodes/static',$dados);
     }
 
 }

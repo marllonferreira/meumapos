@@ -6,16 +6,7 @@
 <script type="text/javascript" src="<?php echo base_url() ?>assets/trumbowyg/trumbowyg.js"></script>
 <script type="text/javascript" src="<?php echo base_url() ?>assets/trumbowyg/langs/pt_br.js"></script>
 
-<style>
-    .ui-datepicker {
-        z-index: 9999 !important;
-    }
-
-    .trumbowyg-box {
-        margin-top: 0;
-        margin-bottom: 0;
-    }
-</style>
+<link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/custom.css" />
 
 <div class="row-fluid" style="margin-top:0">
     <div class="span12">
@@ -53,13 +44,15 @@
                                         <div class="span3">
                                             <label for="status">Status<span class="required">*</span></label>
                                             <select class="span12" name="status" id="status" value="">
-                                                <option value="Orçamento">Orçamento</option>
                                                 <option value="Aberto">Aberto</option>
+                                                <option value="Orçamento">Orçamento</option>
+                                                <option value="Negociação">Negociação</option>
+                                                <option value="Aprovado">Aprovado</option>
+                                                <option value="Aguardando Peças">Aguardando Peças</option>
                                                 <option value="Em Andamento">Em Andamento</option>
                                                 <option value="Finalizado">Finalizado</option>
+                                                <option value="Faturado">Faturado</option>
                                                 <option value="Cancelado">Cancelado</option>
-                                                <option value="Aguardando Peças">Aguardando Peças</option>
-                                                <option value="Aprovado">Aprovado</option>
                                             </select>
                                         </div>
                                         <div class="span3">
@@ -68,7 +61,7 @@
                                         </div>
                                         <div class="span3">
                                             <label for="dataFinal">Data Final<span class="required">*</span></label>
-                                            <input id="dataFinal" autocomplete="off" class="span12 datepicker" type="text" name="dataFinal" value="<?php echo date('d/m/Y', strtotime('+3 day')); ?>" />
+                                            <input id="dataFinal" autocomplete="off" class="span12 datepicker" type="text" name="dataFinal" value="" />
                                         </div>
                                         <div class="span3">
                                             <label for="garantia">Garantia (dias)</label>
@@ -189,7 +182,8 @@
             dateFormat: 'dd/mm/yy'
         });
         $('.editor').trumbowyg({
-            lang: 'pt_br'
+            lang: 'pt_br',
+            semantic: { 'strikethrough': 's', }
         });
     });
 </script>

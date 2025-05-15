@@ -1,1 +1,0 @@
-<!DOCTYPE html><html><?phpheader("Location: ../index.php/mine/cadastrar"); /* Redirect browser *//* Make sure that code below does not get executed when we redirect. */exit;?><head>    <meta charset="utf-8"/>    <title>INTELSYSTECH NOVO CLIENTE</title></head><body>........</body></html>

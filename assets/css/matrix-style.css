@@ -23,7 +23,7 @@ body {
   --funSider2 : #0467fc;
   --subtitle  : #2c2b31;
   --title     : #d4d8e0;
-  --widget-box: #FFFFFF;
+  --widget-box: #e6e9f3;
   --toggle    : #676779;
 
   /* === Tema pure dark === */
@@ -203,7 +203,7 @@ input[type="text"],
 .row-fluid input[class*="span"],
 input[type="number"],
 select[class*="span"] {
-  background  : #f1f3f4;
+  background  : #e6e9f3;
   border-color: #b1b9be;
 }
 
@@ -3792,6 +3792,15 @@ form {
     font-size: 1.05em;
   }
 
+  .widget-title .buttons .button-container>.btn {
+    width      : 32px !important;
+    min-width  : 32px;
+    white-space: nowrap;
+    overflow   : hidden;
+    position   : relative;
+    left       : 3px;
+  }
+
   .row-fluid select[class*="span"] {
     width     : 100% !important;
     margin-top: 0px;
@@ -4284,4 +4293,28 @@ fieldset[disabled] .btn-info.active {
 
 .table th, .table td{
   border-left: 0px solid #ddd;
+}
+
+/* Ajuste botões de impressão */
+.button-container {
+  position: relative;
+  display: inline-block;
+  margin: none;
+}
+
+.cascading-buttons {
+  display: none;
+  position: absolute;
+  top: 85%;
+  left: 0;
+  border-top: none;
+  z-index: 1;
+}
+
+.button-container:hover .cascading-buttons {
+  display: block;
+}
+
+.button-container .cascading-buttons a {
+  margin: 0 0 3px 0;
 }

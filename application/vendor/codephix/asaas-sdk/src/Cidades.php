@@ -13,7 +13,7 @@ class Cidades {
     }
 
     // Retorna a listagem de cobranças
-    public function getAll(array $filtros){
+    public function getAll(array $filtros = []){
         $filtro = '';
         if(is_array($filtros)){
             if($filtros){
